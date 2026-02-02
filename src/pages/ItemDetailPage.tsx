@@ -42,7 +42,8 @@ export default function ItemDetailPage() {
     if (!item) return;
     try {
       const parsed = new URL(item.url);
-      if (parsed.protocol === "https:" && parsed.hostname === "booth.pm") {
+      const validHost = parsed.hostname === "booth.pm" || parsed.hostname.endsWith(".booth.pm");
+      if (parsed.protocol === "https:" && validHost) {
         await open(item.url);
       }
     } catch (e) {

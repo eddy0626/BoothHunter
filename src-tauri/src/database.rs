@@ -63,6 +63,16 @@ impl AppDatabase {
             );",
         )?;
 
+        // Migration v2: replace old default avatars (pre-2023) with new popular ones
+        let has_old_defaults: bool = conn.query_row(
+            "SELECT COUNT(*) > 0 FROM popular_avatars WHERE name_ja = 'しなの' AND is_default = 1",
+            [],
+            |row| row.get(0),
+        ).unwrap_or(false);
+        if has_old_defaults {
+            conn.execute("DELETE FROM popular_avatars WHERE is_default = 1", [])?;
+        }
+
         // Seed default popular avatars (INSERT OR IGNORE is idempotent)
         Self::seed_default_avatars(&conn)?;
 
@@ -80,21 +90,26 @@ impl AppDatabase {
 
     fn seed_default_avatars(conn: &Connection) -> AppResult<()> {
         let defaults: &[(&str, &str)] = &[
-            ("しなの", "시나노"),
-            ("マヌカ", "마누카"),
-            ("セレスティア", "세레스티아"),
-            ("リリエル", "릴리엘"),
-            ("キュピッド", "큐피드"),
-            ("カリン", "카린"),
-            ("ルシュカ", "루슈카"),
-            ("舞", "마이"),
-            ("桜", "사쿠라"),
-            ("ここあ", "코코아"),
-            ("イメリス", "이메리스"),
-            ("ミラン", "미란"),
-            ("うるる", "우루루"),
-            ("イチゴ", "이치고"),
-            ("桔梗", "키쿄"),
+            ("キプフェル", "키프펠"),
+            ("ルルネ", "루루네"),
+            ("ミルティナ", "밀티나"),
+            ("まめひなた", "마메히나타"),
+            ("ショコラ", "쇼콜라"),
+            ("しお", "시오"),
+            ("Grus", "그루스"),
+            ("りりか", "리리카"),
+            ("狐雪", "코유키"),
+            ("ミント", "민트"),
+            ("みなほし", "미나호시"),
+            ("しらつめ", "시라츠메"),
+            ("リルモワ", "리루모와"),
+            ("ソラハ", "소라하"),
+            ("碼希", "마키"),
+            ("カルネ", "카르네"),
+            ("リーファ", "리파"),
+            ("ラズリ", "라즈리"),
+            ("ルーナリット", "루나릿"),
+            ("ハオラン", "하오란"),
         ];
         for (ja, ko) in defaults {
             conn.execute(
