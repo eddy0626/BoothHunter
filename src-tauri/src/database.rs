@@ -98,9 +98,7 @@ impl AppDatabase {
             .prepare("SELECT wish_count FROM cached_items LIMIT 0")
             .is_ok();
         if !has_wish_count {
-            conn.execute_batch(
-                "ALTER TABLE cached_items ADD COLUMN wish_count INTEGER;",
-            )?;
+            conn.execute_batch("ALTER TABLE cached_items ADD COLUMN wish_count INTEGER;")?;
         }
 
         // Migration v2: replace old default avatars (pre-2023) with new popular ones

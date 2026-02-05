@@ -148,7 +148,10 @@ pub fn add_favorite(db: State<'_, AppDatabase>, params: AddFavoriteParams) -> Ap
 pub fn remove_favorite(db: State<'_, AppDatabase>, item_id: i64) -> AppResult<()> {
     let mut conn = db.conn_mut()?;
     let tx = conn.transaction()?;
-    tx.execute("DELETE FROM collection_items WHERE item_id = ?1", params![item_id])?;
+    tx.execute(
+        "DELETE FROM collection_items WHERE item_id = ?1",
+        params![item_id],
+    )?;
     tx.execute("DELETE FROM item_tags WHERE item_id = ?1", params![item_id])?;
     tx.execute("DELETE FROM favorites WHERE item_id = ?1", params![item_id])?;
     tx.commit()?;
@@ -184,7 +187,9 @@ pub fn get_popular_avatars(db: State<'_, AppDatabase>) -> AppResult<Vec<PopularA
 pub fn check_avatars_need_update(db: State<'_, AppDatabase>) -> AppResult<bool> {
     let conn = db.conn()?;
     let oldest: Option<String> =
-        conn.query_row("SELECT MIN(updated_at) FROM popular_avatars", [], |row| row.get(0))?;
+        conn.query_row("SELECT MIN(updated_at) FROM popular_avatars", [], |row| {
+            row.get(0)
+        })?;
 
     match oldest {
         None => Ok(true),

@@ -15,7 +15,9 @@ fn validate_name(name: &str) -> AppResult<String> {
         return Err(AppError::ParseError("Name cannot be empty".to_string()));
     }
     if trimmed.len() > 200 {
-        return Err(AppError::ParseError("Name too long (max 200 chars)".to_string()));
+        return Err(AppError::ParseError(
+            "Name too long (max 200 chars)".to_string(),
+        ));
     }
     Ok(trimmed)
 }
@@ -25,7 +27,9 @@ fn validate_color(color: &str) -> AppResult<()> {
         && color.starts_with('#')
         && color[1..].chars().all(|c| c.is_ascii_hexdigit());
     if !valid {
-        return Err(AppError::ParseError("Invalid color format (expected #RRGGBB)".to_string()));
+        return Err(AppError::ParseError(
+            "Invalid color format (expected #RRGGBB)".to_string(),
+        ));
     }
     Ok(())
 }
@@ -93,11 +97,7 @@ pub fn create_collection(
 }
 
 #[tauri::command]
-pub fn rename_collection(
-    db: State<'_, AppDatabase>,
-    id: i64,
-    name: String,
-) -> AppResult<()> {
+pub fn rename_collection(db: State<'_, AppDatabase>, id: i64, name: String) -> AppResult<()> {
     let name = validate_name(&name)?;
     let conn = db.conn()?;
     conn.execute(
@@ -193,14 +193,9 @@ pub fn get_collection_items(
 
 /// Get all collection IDs that a given item belongs to
 #[tauri::command]
-pub fn get_item_collections(
-    db: State<'_, AppDatabase>,
-    item_id: i64,
-) -> AppResult<Vec<i64>> {
+pub fn get_item_collections(db: State<'_, AppDatabase>, item_id: i64) -> AppResult<Vec<i64>> {
     let conn = db.conn()?;
-    let mut stmt = conn.prepare(
-        "SELECT collection_id FROM collection_items WHERE item_id = ?1",
-    )?;
+    let mut stmt = conn.prepare("SELECT collection_id FROM collection_items WHERE item_id = ?1")?;
     let rows = stmt
         .query_map(params![item_id], |row| row.get(0))?
         .collect::<Result<Vec<i64>, _>>()?;
@@ -210,11 +205,7 @@ pub fn get_item_collections(
 // ── Item tags ──────────────────────────────────────────
 
 #[tauri::command]
-pub fn set_item_tags(
-    db: State<'_, AppDatabase>,
-    item_id: i64,
-    tags: Vec<String>,
-) -> AppResult<()> {
+pub fn set_item_tags(db: State<'_, AppDatabase>, item_id: i64, tags: Vec<String>) -> AppResult<()> {
     let mut conn = db.conn_mut()?;
     let tx = conn.transaction()?;
     tx.execute("DELETE FROM item_tags WHERE item_id = ?1", params![item_id])?;
@@ -233,14 +224,9 @@ pub fn set_item_tags(
 }
 
 #[tauri::command]
-pub fn get_item_tags(
-    db: State<'_, AppDatabase>,
-    item_id: i64,
-) -> AppResult<Vec<String>> {
+pub fn get_item_tags(db: State<'_, AppDatabase>, item_id: i64) -> AppResult<Vec<String>> {
     let conn = db.conn()?;
-    let mut stmt = conn.prepare(
-        "SELECT tag FROM item_tags WHERE item_id = ?1 ORDER BY tag",
-    )?;
+    let mut stmt = conn.prepare("SELECT tag FROM item_tags WHERE item_id = ?1 ORDER BY tag")?;
     let rows = stmt
         .query_map(params![item_id], |row| row.get(0))?
         .collect::<Result<Vec<String>, _>>()?;
@@ -294,9 +280,7 @@ pub fn get_all_item_collections_batch(
 #[tauri::command]
 pub fn get_all_user_tags(db: State<'_, AppDatabase>) -> AppResult<Vec<String>> {
     let conn = db.conn()?;
-    let mut stmt = conn.prepare(
-        "SELECT DISTINCT tag FROM item_tags ORDER BY tag",
-    )?;
+    let mut stmt = conn.prepare("SELECT DISTINCT tag FROM item_tags ORDER BY tag")?;
     let rows = stmt
         .query_map([], |row| row.get(0))?
         .collect::<Result<Vec<String>, _>>()?;
