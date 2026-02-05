@@ -23,7 +23,8 @@ export default function UpdateToast({ update, onDismiss }: Props) {
     setError(false);
     try {
       await invoke("install_update");
-    } catch {
+    } catch (e) {
+      console.error("Update installation failed:", e);
       setError(true);
       setInstalling(false);
     }
