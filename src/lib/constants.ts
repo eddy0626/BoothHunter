@@ -72,6 +72,13 @@ export const UI_TEXT = {
     katakana: "카타카나",
     mixed: "혼합",
   },
+  updater: {
+    available: "새로운 버전이 있습니다",
+    downloading: "업데이트 다운로드 중...",
+    install: "업데이트",
+    dismiss: "나중에",
+    error: "업데이트 중 오류가 발생했습니다",
+  },
   common: {
     loading: "로딩 중...",
     error: "오류가 발생했습니다",
