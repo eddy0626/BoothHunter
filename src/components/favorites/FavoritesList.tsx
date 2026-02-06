@@ -80,6 +80,7 @@ export default memo(function FavoritesList({ items }: Props) {
               <Link
                 to={`/item/${fav.item_id}`}
                 className="text-sm font-medium text-gray-900 line-clamp-2 hover:text-indigo-600 flex-1"
+                title={fav.name}
               >
                 {fav.name}
               </Link>

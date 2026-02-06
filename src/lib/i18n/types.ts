@@ -62,6 +62,12 @@ export interface Translations {
     page: string;
     prev: string;
     next: string;
+    linkCopied: string;
+    copyLink: string;
+  };
+  translation: {
+    button: string;
+    error: string;
   };
   stats: {
     title: string;

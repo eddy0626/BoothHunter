@@ -2,10 +2,9 @@ use serde::Serialize;
 
 #[derive(Debug, thiserror::Error)]
 pub enum AppError {
-    #[error("Failed to parse data")]
+    #[error("{0}")]
     ParseError(String),
 
-    #[allow(dead_code)]
     #[error("Item not found: {0}")]
     NotFound(String),
 

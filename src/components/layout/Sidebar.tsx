@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink, useNavigate, useSearchParams } from "react-router-dom";
 import {
   Search,
   Heart,
@@ -41,6 +41,7 @@ export default function Sidebar() {
   const { activeCategory, setActiveCategory } = useSearchContext();
   const { t } = useI18n();
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const navItems = [
     { to: "/", icon: Search, label: t.nav.search },
@@ -51,7 +52,27 @@ export default function Sidebar() {
   const handleCategoryClick = (jaName: string) => {
     const next = activeCategory === jaName ? null : jaName;
     setActiveCategory(next);
-    navigate("/");
+
+    if (searchParams.has("q")) {
+      // Search is active — update cat/sort in-place
+      setSearchParams((prev) => {
+        const updated = new URLSearchParams(prev);
+        if (next) {
+          updated.set("cat", next);
+          updated.set("sort", "popular");
+        } else {
+          updated.delete("cat");
+          updated.delete("sort");
+        }
+        updated.set("page", "1");
+        return updated;
+      }, { replace: true });
+    } else if (next) {
+      // No search active — start a category browse
+      navigate(`/?q=&cat=${encodeURIComponent(next)}&sort=popular`);
+    } else {
+      navigate("/");
+    }
   };
 
   return (

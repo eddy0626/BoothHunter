@@ -41,12 +41,6 @@ export interface FavoriteItem {
   note: string | null;
 }
 
-export interface SearchHistoryEntry {
-  id: number;
-  keyword: string;
-  searched_at: string;
-}
-
 export interface Collection {
   id: number;
   name: string;

@@ -4,7 +4,7 @@ import { useI18n } from "../../lib/i18n";
 import { usePopularAvatars } from "../../hooks/usePopularAvatars";
 
 interface Props {
-  onSearch: (keyword: string) => void;
+  onSearch: (keyword: string, extra?: { category?: string }) => void;
 }
 
 export default function AvatarQuickFilter({ onSearch }: Props) {
@@ -18,11 +18,10 @@ export default function AvatarQuickFilter({ onSearch }: Props) {
     const keyword = `${nameJa} 対応`;
     if (activeAvatar === nameJa) {
       setActiveAvatar(null);
-      // Re-search without avatar filter by searching empty (will be handled by parent)
       return;
     }
     setActiveAvatar(nameJa);
-    onSearch(keyword);
+    onSearch(keyword, { category: "3D衣装" });
   };
 
   const handleContextMenu = (e: React.MouseEvent, nameJa: string) => {

@@ -12,7 +12,10 @@
       "identifier": "http:default",
       "allow": [
         { "url": "https://booth.pm/**" },
-        { "url": "https://*.booth.pm/**" }
+        { "url": "https://*.booth.pm/**" },
+        { "url": "https://lingva.ml/**" },
+        { "url": "https://lingva.lunar.icu/**" },
+        { "url": "https://translate.plausibility.cloud/**" }
       ]
     }
   ]

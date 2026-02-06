@@ -62,6 +62,12 @@ export const en: Translations = {
     page: "Page",
     prev: "Previous",
     next: "Next",
+    linkCopied: "Link copied",
+    copyLink: "Copy link",
+  },
+  translation: {
+    button: "Translate",
+    error: "Translation failed",
   },
   stats: {
     title: "Statistics Dashboard",

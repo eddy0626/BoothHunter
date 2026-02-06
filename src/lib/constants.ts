@@ -79,6 +79,13 @@ export const UI_TEXT = {
     page: "페이지",
     prev: "이전",
     next: "다음",
+    linkCopied: "링크가 복사되었습니다",
+    copyLink: "링크 복사",
+  },
+  translation: {
+    button: "번역",
+    loading: "번역 중...",
+    error: "번역 실패",
   },
 } as const;
 
@@ -89,17 +96,8 @@ export const SORT_OPTIONS = [
   { value: "price_desc", label: "가격 높은순" },
 ] as const;
 
-export const CATEGORIES: Record<string, string> = {
-  "3Dキャラクター": "3D 캐릭터",
-  "3D衣装": "3D 의상",
-  "3D小道具": "3D 소품",
-  "3Dテクスチャ": "3D 텍스처",
-  "3Dモデル（その他）": "3D 모델 (기타)",
-  "3D装飾品": "3D 장식품",
-  "3D環境・ワールド": "3D 환경/월드",
-  "3Dモーション・アニメーション": "3D 모션/애니메이션",
-  "3Dツール・システム": "3D 툴/시스템",
-  "VRoid": "VRoid",
-};
+export const CATEGORIES: Record<string, string> = Object.fromEntries(
+  VRCHAT_CATEGORIES.map((c) => [c.jaName, c.koLabel]),
+);
 
 export const ITEMS_PER_PAGE = 24;

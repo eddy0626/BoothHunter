@@ -62,6 +62,12 @@ export const ko: Translations = {
     page: "페이지",
     prev: "이전",
     next: "다음",
+    linkCopied: "링크를 복사했습니다",
+    copyLink: "링크 복사",
+  },
+  translation: {
+    button: "번역",
+    error: "번역 실패",
   },
   stats: {
     title: "통계 대시보드",

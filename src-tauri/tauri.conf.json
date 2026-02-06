@@ -22,7 +22,7 @@
       }
     ],
     "security": {
-      "csp": "default-src 'self'; img-src 'self' https://booth.pximg.net https://*.booth.pm https://*.pximg.net data:; style-src 'self' 'unsafe-inline'; connect-src 'self' https://booth.pm https://*.booth.pm ipc: http://ipc.localhost"
+      "csp": "default-src 'self'; img-src 'self' https://booth.pximg.net https://*.booth.pm https://*.pximg.net data:; style-src 'self' 'unsafe-inline'; connect-src 'self' https://booth.pm https://*.booth.pm https://lingva.ml https://lingva.lunar.icu https://translate.plausibility.cloud ipc: http://ipc.localhost"
     }
   },
   "bundle": {

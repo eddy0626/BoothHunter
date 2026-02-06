@@ -25,7 +25,6 @@ tauri-plugin-shell = "2"
 tauri-plugin-http = "2"
 thiserror = "2"
 rusqlite = { version = "0.31", features = ["bundled"] }
-tokio = { version = "1", features = ["full"] }
 
 [target.'cfg(any(target_os = "macos", windows, target_os = "linux"))'.dependencies]
 tauri-plugin-process = "2.3.1"

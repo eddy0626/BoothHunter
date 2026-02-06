@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Filter, X, Heart } from "lucide-react";
 import { clsx } from "clsx";
 import { useI18n, getSortLabel } from "../../lib/i18n";
@@ -24,6 +24,13 @@ export default function FilterPanel({ params, onFilterChange, isEnriching }: Pro
   const [wishMin, setWishMin] = useState(
     params.min_wish_count?.toString() ?? "",
   );
+
+  // Sync local state when params change (e.g. URL back/forward navigation)
+  useEffect(() => {
+    setPriceMin(params.price_min?.toString() ?? "");
+    setPriceMax(params.price_max?.toString() ?? "");
+    setWishMin(params.min_wish_count?.toString() ?? "");
+  }, [params.price_min, params.price_max, params.min_wish_count]);
 
   const handleApplyPrice = () => {
     const clampPrice = (val: string) => {

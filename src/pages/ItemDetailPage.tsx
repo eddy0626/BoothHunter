@@ -6,11 +6,16 @@ import {
   ExternalLink,
   ChevronLeft,
   ChevronRight,
+  Link2,
+  Languages,
+  Loader2,
 } from "lucide-react";
 import { getBoothItem } from "../lib/booth-api";
 import { useI18n } from "../lib/i18n";
 import { useFavorites } from "../hooks/useFavorites";
 import FavoriteButton from "../components/favorites/FavoriteButton";
+import { useToast } from "../lib/ToastContext";
+import { useTranslation } from "../hooks/useTranslation";
 import { open } from "@tauri-apps/plugin-shell";
 
 export default function ItemDetailPage() {
@@ -19,8 +24,15 @@ export default function ItemDetailPage() {
   const [currentImage, setCurrentImage] = useState(0);
   const { isFavorite, addFavorite, removeFavorite } = useFavorites();
   const { t, language } = useI18n();
+  const { showToast } = useToast();
+  const { translatedText, isTranslating, isTranslationVisible, translationError, translate, reset: resetTranslation } = useTranslation();
+  const { translatedText: descTranslatedText, isTranslating: descIsTranslating, isTranslationVisible: descIsTranslationVisible, translationError: descTranslationError, translate: descTranslate, reset: resetDescTranslation } = useTranslation();
 
-  useEffect(() => setCurrentImage(0), [itemId]);
+  useEffect(() => {
+    setCurrentImage(0);
+    resetTranslation();
+    resetDescTranslation();
+  }, [itemId, resetTranslation, resetDescTranslation]);
 
   const { data: item, isLoading, error } = useQuery({
     queryKey: ["item", itemId],
@@ -60,6 +72,14 @@ export default function ItemDetailPage() {
     } catch {
       // URL parsing failed or open failed — no action needed
     }
+  };
+
+  const handleCopyLink = () => {
+    if (!item) return;
+    navigator.clipboard.writeText(item.url).then(
+      () => showToast(t.common.linkCopied),
+      () => console.error("Clipboard write failed"),
+    );
   };
 
   if (isLoading) {
@@ -169,9 +189,35 @@ export default function ItemDetailPage() {
           {/* Item info */}
           <div>
             <div className="flex items-start gap-3">
-              <h1 className="text-xl font-bold text-gray-900 flex-1">
-                {item.name}
-              </h1>
+              <div className="flex-1 min-w-0">
+                <h1 className="text-xl font-bold text-gray-900">
+                  {item.name}
+                </h1>
+                {isTranslationVisible && translatedText && (
+                  <p className="text-sm text-indigo-600 mt-1">{translatedText}</p>
+                )}
+                {translationError && (
+                  <p className="text-xs text-red-400 mt-1">{t.translation.error}</p>
+                )}
+              </div>
+              <button
+                onClick={() => translate(item.name)}
+                className="p-1.5 text-gray-400 hover:text-indigo-600 transition-colors shrink-0"
+                title={t.translation.button}
+              >
+                {isTranslating ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  <Languages className="w-4 h-4" />
+                )}
+              </button>
+              <button
+                onClick={handleCopyLink}
+                className="p-1.5 text-gray-400 hover:text-indigo-600 transition-colors shrink-0"
+                title={t.common.copyLink}
+              >
+                <Link2 className="w-4 h-4" />
+              </button>
               <FavoriteButton
                 item={item}
                 favorited={isFavorite(item.id)}
@@ -236,9 +282,30 @@ export default function ItemDetailPage() {
 
             {item.description && (
               <div className="mt-6">
-                <h3 className="text-sm font-medium text-gray-700 mb-2">
-                  {t.item.description}
-                </h3>
+                <div className="flex items-center gap-2 mb-2">
+                  <h3 className="text-sm font-medium text-gray-700">
+                    {t.item.description}
+                  </h3>
+                  <button
+                    onClick={() => descTranslate(item.description!)}
+                    className="p-1 text-gray-400 hover:text-indigo-600 transition-colors"
+                    title={t.translation.button}
+                  >
+                    {descIsTranslating ? (
+                      <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                    ) : (
+                      <Languages className="w-3.5 h-3.5" />
+                    )}
+                  </button>
+                </div>
+                {descIsTranslationVisible && descTranslatedText && (
+                  <div className="text-sm text-indigo-600 whitespace-pre-wrap leading-relaxed max-h-80 overflow-y-auto mb-3">
+                    {descTranslatedText}
+                  </div>
+                )}
+                {descTranslationError && (
+                  <p className="text-xs text-red-400 mb-2">{t.translation.error}</p>
+                )}
                 <div className="text-sm text-gray-600 whitespace-pre-wrap leading-relaxed max-h-80 overflow-y-auto">
                   {item.description}
                 </div>

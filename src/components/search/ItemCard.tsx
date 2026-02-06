@@ -1,9 +1,11 @@
 import { memo } from "react";
 import { Link } from "react-router-dom";
-import { Heart } from "lucide-react";
+import { Heart, Link2, Languages, Loader2 } from "lucide-react";
 import type { BoothItem } from "../../lib/types";
 import { useI18n } from "../../lib/i18n";
 import FavoriteButton from "../favorites/FavoriteButton";
+import { useToast } from "../../lib/ToastContext";
+import { useTranslation } from "../../hooks/useTranslation";
 
 interface Props {
   item: BoothItem;
@@ -17,6 +19,17 @@ export default memo(function ItemCard({ item, favorited, onAddFavorite, onRemove
   const thumbnail = item.images[0] || "";
   const priceText =
     item.price === 0 ? t.item.free : `¥${item.price.toLocaleString()}`;
+  const { showToast } = useToast();
+  const { translatedText, isTranslating, isTranslationVisible, translationError, translate } = useTranslation();
+
+  const handleCopyLink = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    navigator.clipboard.writeText(item.url).then(
+      () => showToast(t.common.linkCopied),
+      () => console.error("Clipboard write failed"),
+    );
+  };
 
   return (
     <div className="bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-md transition-shadow group">
@@ -34,16 +47,45 @@ export default memo(function ItemCard({ item, favorited, onAddFavorite, onRemove
               No Image
             </div>
           )}
+          <button
+            onClick={handleCopyLink}
+            className="absolute top-2 right-2 p-1.5 bg-black/50 text-white rounded-md opacity-0 group-hover:opacity-100 transition-opacity hover:bg-black/70"
+            title={t.common.copyLink}
+          >
+            <Link2 className="w-3.5 h-3.5" />
+          </button>
         </div>
       </Link>
       <div className="p-3">
         <div className="flex items-start justify-between gap-1">
-          <Link
-            to={`/item/${item.id}`}
-            className="text-sm font-medium text-gray-900 line-clamp-2 hover:text-indigo-600 flex-1"
-          >
-            {item.name}
-          </Link>
+          <div className="flex-1 min-w-0">
+            <div className="flex items-start gap-1">
+              <Link
+                to={`/item/${item.id}`}
+                className="text-sm font-medium text-gray-900 line-clamp-2 hover:text-indigo-600 flex-1"
+                title={item.name}
+              >
+                {item.name}
+              </Link>
+              <button
+                onClick={() => translate(item.name)}
+                className="p-0.5 text-gray-400 hover:text-indigo-600 transition-colors shrink-0"
+                title={t.translation.button}
+              >
+                {isTranslating ? (
+                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                ) : (
+                  <Languages className="w-3.5 h-3.5" />
+                )}
+              </button>
+            </div>
+            {isTranslationVisible && translatedText && (
+              <p className="text-xs text-indigo-600 mt-0.5">{translatedText}</p>
+            )}
+            {translationError && (
+              <p className="text-xs text-red-400 mt-0.5">{t.translation.error}</p>
+            )}
+          </div>
           <FavoriteButton
             item={item}
             favorited={favorited}
@@ -79,12 +121,4 @@ export default memo(function ItemCard({ item, favorited, onAddFavorite, onRemove
       </div>
     </div>
   );
-}, (prev, next) =>
-  prev.item.id === next.item.id &&
-  prev.item.name === next.item.name &&
-  prev.item.price === next.item.price &&
-  prev.item.shop_name === next.item.shop_name &&
-  prev.item.category_name === next.item.category_name &&
-  prev.item.wish_lists_count === next.item.wish_lists_count &&
-  prev.favorited === next.favorited,
-);
+});

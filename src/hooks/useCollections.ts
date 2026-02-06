@@ -7,9 +7,6 @@ import {
   addToCollection,
   removeFromCollection,
   getCollectionItems,
-  getItemCollections,
-  setItemTags,
-  getItemTags,
   getAllUserTags,
   getAllItemTagsBatch,
   getAllItemCollectionsBatch,
@@ -83,36 +80,6 @@ export function useCollectionItems(collectionId: number | null) {
     queryFn: () => getCollectionItems(collectionId!),
     enabled: collectionId != null,
   });
-}
-
-export function useItemCollections(itemId: number) {
-  return useQuery<number[]>({
-    queryKey: ["item-collections", itemId],
-    queryFn: () => getItemCollections(itemId),
-  });
-}
-
-export function useItemTags(itemId: number) {
-  const qc = useQueryClient();
-  const query = useQuery<string[]>({
-    queryKey: ["item-tags", itemId],
-    queryFn: () => getItemTags(itemId),
-  });
-
-  const setTagsMut = useMutation({
-    mutationFn: (tags: string[]) => setItemTags(itemId, tags),
-    onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["item-tags", itemId] });
-      qc.invalidateQueries({ queryKey: ["all-user-tags"] });
-      qc.invalidateQueries({ queryKey: ["all-item-tags-batch"] });
-    },
-  });
-
-  return {
-    tags: query.data ?? [],
-    isLoading: query.isLoading,
-    setTags: setTagsMut.mutateAsync,
-  };
 }
 
 export function useAllUserTags() {

@@ -8,13 +8,6 @@ import type {
   FavoriteItem,
   Collection,
   AllStatistics,
-  DashboardStats,
-  CategoryStat,
-  PriceBucket,
-  TagStat,
-  SearchFrequency,
-  MonthlyCount,
-  ShopStat,
 } from "./types";
 
 // ── Rate limiters (separate queues for different priorities) ──
@@ -304,10 +297,6 @@ export async function renameCollection(id: number, name: string): Promise<void> 
   return invoke("rename_collection", { id, name });
 }
 
-export async function updateCollectionColor(id: number, color: string): Promise<void> {
-  return invoke("update_collection_color", { id, color });
-}
-
 export async function deleteCollection(id: number): Promise<void> {
   return invoke("delete_collection", { id });
 }
@@ -324,18 +313,10 @@ export async function getCollectionItems(collectionId: number): Promise<Favorite
   return invoke<FavoriteItem[]>("get_collection_items", { collectionId });
 }
 
-export async function getItemCollections(itemId: number): Promise<number[]> {
-  return invoke<number[]>("get_item_collections", { itemId });
-}
-
 // ── Item Tags ────────────────────────────────────────
 
 export async function setItemTags(itemId: number, tags: string[]): Promise<void> {
   return invoke("set_item_tags", { itemId, tags });
-}
-
-export async function getItemTags(itemId: number): Promise<string[]> {
-  return invoke<string[]>("get_item_tags", { itemId });
 }
 
 export async function getAllUserTags(): Promise<string[]> {
@@ -356,30 +337,12 @@ export async function getAllStatistics(): Promise<AllStatistics> {
   return invoke<AllStatistics>("get_all_statistics");
 }
 
-export async function getDashboardStats(): Promise<DashboardStats> {
-  return invoke<DashboardStats>("get_dashboard_stats");
+// ── Translation Cache ────────────────────────────────
+
+export async function getCachedTranslation(sourceText: string): Promise<string | null> {
+  return invoke<string | null>("get_cached_translation", { sourceText });
 }
 
-export async function getCategoryDistribution(): Promise<CategoryStat[]> {
-  return invoke<CategoryStat[]>("get_category_distribution");
-}
-
-export async function getPriceDistribution(): Promise<PriceBucket[]> {
-  return invoke<PriceBucket[]>("get_price_distribution");
-}
-
-export async function getTopTags(): Promise<TagStat[]> {
-  return invoke<TagStat[]>("get_top_tags");
-}
-
-export async function getSearchHistoryStats(): Promise<SearchFrequency[]> {
-  return invoke<SearchFrequency[]>("get_search_history_stats");
-}
-
-export async function getMonthlyFavorites(): Promise<MonthlyCount[]> {
-  return invoke<MonthlyCount[]>("get_monthly_favorites");
-}
-
-export async function getTopShops(): Promise<ShopStat[]> {
-  return invoke<ShopStat[]>("get_top_shops");
+export async function saveCachedTranslation(sourceText: string, translatedText: string): Promise<void> {
+  return invoke("save_cached_translation", { sourceText, translatedText });
 }

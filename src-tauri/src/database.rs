@@ -63,6 +63,13 @@ impl AppDatabase {
             );",
         )?;
 
+        // Indexes on frequently-queried timestamp columns
+        conn.execute_batch(
+            "CREATE INDEX IF NOT EXISTS idx_search_history_searched_at ON search_history(searched_at);
+             CREATE INDEX IF NOT EXISTS idx_cached_items_cached_at ON cached_items(cached_at);
+             CREATE INDEX IF NOT EXISTS idx_favorites_added_at ON favorites(added_at);",
+        )?;
+
         // Migration v4: collections & tags
         conn.execute_batch(
             "CREATE TABLE IF NOT EXISTS collections (
@@ -114,9 +121,24 @@ impl AppDatabase {
         // Seed default popular avatars (INSERT OR IGNORE is idempotent)
         Self::seed_default_avatars(&conn)?;
 
+        // Migration v5: translations cache
+        conn.execute_batch(
+            "CREATE TABLE IF NOT EXISTS translations (
+                source_text TEXT PRIMARY KEY,
+                translated_text TEXT NOT NULL,
+                created_at TEXT DEFAULT (datetime('now'))
+            );",
+        )?;
+
         // Evict cached items older than 30 days to prevent unbounded growth
         conn.execute(
             "DELETE FROM cached_items WHERE cached_at < datetime('now', '-30 days')",
+            [],
+        )?;
+
+        // Evict translations older than 90 days
+        conn.execute(
+            "DELETE FROM translations WHERE created_at < datetime('now', '-90 days')",
             [],
         )?;
 
@@ -132,8 +154,8 @@ impl AppDatabase {
         })
     }
 
-    /// Returns a mutable reference to the connection for transaction use.
-    /// Callers should use `conn_mut()` when they need `Transaction` via `conn.transaction()`.
+    /// Alias for `conn()` — semantic hint that the caller needs mutable access (e.g. transactions).
+    #[inline]
     pub fn conn_mut(&self) -> AppResult<std::sync::MutexGuard<'_, Connection>> {
         self.conn()
     }

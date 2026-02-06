@@ -75,13 +75,8 @@ pub fn run() {
             commands::collections::get_all_item_tags_batch,
             commands::collections::get_all_item_collections_batch,
             commands::stats::get_all_statistics,
-            commands::stats::get_dashboard_stats,
-            commands::stats::get_category_distribution,
-            commands::stats::get_price_distribution,
-            commands::stats::get_top_tags,
-            commands::stats::get_search_history_stats,
-            commands::stats::get_monthly_favorites,
-            commands::stats::get_top_shops,
+            commands::translation::get_cached_translation,
+            commands::translation::save_cached_translation,
             commands::updater::install_update,
         ])
         .setup(|app| {

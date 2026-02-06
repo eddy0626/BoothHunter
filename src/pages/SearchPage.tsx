@@ -1,4 +1,3 @@
-import { useEffect, useRef } from "react";
 import { useSearch } from "../hooks/useSearch";
 import { useSearchContext } from "../lib/SearchContext";
 import SearchBar from "../components/search/SearchBar";
@@ -9,6 +8,7 @@ import Pagination from "../components/common/Pagination";
 import { ITEMS_PER_PAGE } from "../lib/constants";
 import { useI18n, getCategoryLabel } from "../lib/i18n";
 import { Search, X } from "lucide-react";
+import type { SearchParams } from "../lib/types";
 
 export default function SearchPage() {
   const {
@@ -27,23 +27,15 @@ export default function SearchPage() {
 
   const { activeCategory, setActiveCategory } = useSearchContext();
   const { t } = useI18n();
-  const prevCategory = useRef(activeCategory);
 
-  // Sync sidebar category → search filters
-  useEffect(() => {
-    if (activeCategory !== prevCategory.current) {
-      prevCategory.current = activeCategory;
-      updateFilters({ category: activeCategory ?? undefined });
-    }
-  }, [activeCategory, updateFilters]);
-
-  const handleSearch = (keyword: string) => {
-    search(keyword, activeCategory ? { category: activeCategory } : undefined);
+  const handleSearch = (keyword: string, extra?: Partial<SearchParams>) => {
+    if (extra?.category) setActiveCategory(extra.category);
+    search(keyword, { category: extra?.category ?? activeCategory ?? undefined, ...extra });
   };
 
   const handleClearCategory = () => {
     setActiveCategory(null);
-    if (currentParams) {
+    if (hasSearched) {
       updateFilters({ category: undefined });
     }
   };
@@ -87,10 +79,10 @@ export default function SearchPage() {
           <AvatarQuickFilter onSearch={handleSearch} />
         </div>
 
-        {hasSearched && (
+        {hasSearched && currentParams && (
           <div className="mt-4">
             <FilterPanel
-              params={currentParams!}
+              params={currentParams}
               onFilterChange={updateFilters}
               isEnriching={isEnriching}
             />
