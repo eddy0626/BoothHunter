@@ -4,7 +4,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "tauri dev",
+    "dev:frontend": "vite",
+    "dev:backend": "cargo run --manifest-path src-tauri/Cargo.toml",
     "build": "tsc && vite build",
     "preview": "vite preview",
     "test": "vitest run",
@@ -14,7 +16,7 @@
   },
   "dependencies": {
     "@tanstack/react-query": "^5.90.20",
-    "@tauri-apps/api": "~2.9.0",
+    "@tauri-apps/api": "~2.10.0",
     "@tauri-apps/plugin-http": "^2.5.6",
     "@tauri-apps/plugin-process": "^2.3.1",
     "@tauri-apps/plugin-shell": "^2.3.4",
