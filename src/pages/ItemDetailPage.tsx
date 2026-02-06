@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
-import { useParams, Link } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
+import { useState, useEffect } from 'react';
+import { useParams, Link } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
 import {
   ArrowLeft,
   ExternalLink,
@@ -9,14 +9,14 @@ import {
   Link2,
   Languages,
   Loader2,
-} from "lucide-react";
-import { getBoothItem } from "../lib/booth-api";
-import { useI18n } from "../lib/i18n";
-import { useFavorites } from "../hooks/useFavorites";
-import FavoriteButton from "../components/favorites/FavoriteButton";
-import { useToast } from "../lib/ToastContext";
-import { useTranslation } from "../hooks/useTranslation";
-import { open } from "@tauri-apps/plugin-shell";
+} from 'lucide-react';
+import { getBoothItem } from '../lib/booth-api';
+import { useI18n } from '../lib/i18n';
+import { useFavorites } from '../hooks/useFavorites';
+import FavoriteButton from '../components/favorites/FavoriteButton';
+import { useToast } from '../lib/ToastContext';
+import { useTranslation } from '../hooks/useTranslation';
+import { open } from '@tauri-apps/plugin-shell';
 
 export default function ItemDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -25,8 +25,22 @@ export default function ItemDetailPage() {
   const { isFavorite, addFavorite, removeFavorite } = useFavorites();
   const { t, language } = useI18n();
   const { showToast } = useToast();
-  const { translatedText, isTranslating, isTranslationVisible, translationError, translate, reset: resetTranslation } = useTranslation();
-  const { translatedText: descTranslatedText, isTranslating: descIsTranslating, isTranslationVisible: descIsTranslationVisible, translationError: descTranslationError, translate: descTranslate, reset: resetDescTranslation } = useTranslation();
+  const {
+    translatedText,
+    isTranslating,
+    isTranslationVisible,
+    translationError,
+    translate,
+    reset: resetTranslation,
+  } = useTranslation();
+  const {
+    translatedText: descTranslatedText,
+    isTranslating: descIsTranslating,
+    isTranslationVisible: descIsTranslationVisible,
+    translationError: descTranslationError,
+    translate: descTranslate,
+    reset: resetDescTranslation,
+  } = useTranslation();
 
   useEffect(() => {
     setCurrentImage(0);
@@ -34,14 +48,18 @@ export default function ItemDetailPage() {
     resetDescTranslation();
   }, [itemId, resetTranslation, resetDescTranslation]);
 
-  const { data: item, isLoading, error } = useQuery({
-    queryKey: ["item", itemId],
+  const {
+    data: item,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ['item', itemId],
     queryFn: () => getBoothItem(itemId),
     enabled: !isNaN(itemId),
   });
 
-  const backText = language === "ko" ? "돌아가기" : "Go back";
-  const invalidIdText = language === "ko" ? "잘못된 아이템 ID입니다." : "Invalid item ID.";
+  const backText = language === 'ko' ? '돌아가기' : 'Go back';
+  const invalidIdText = language === 'ko' ? '잘못된 아이템 ID입니다.' : 'Invalid item ID.';
 
   if (isNaN(itemId)) {
     return (
@@ -63,10 +81,8 @@ export default function ItemDetailPage() {
     try {
       const parsed = new URL(item.url);
       const host = parsed.hostname;
-      const validHost =
-        host === "booth.pm" ||
-        (host != null && host.endsWith(".booth.pm"));
-      if (parsed.protocol === "https:" && validHost) {
+      const validHost = host === 'booth.pm' || (host != null && host.endsWith('.booth.pm'));
+      if (parsed.protocol === 'https:' && validHost) {
         await open(item.url);
       }
     } catch {
@@ -78,7 +94,7 @@ export default function ItemDetailPage() {
     if (!item) return;
     navigator.clipboard.writeText(item.url).then(
       () => showToast(t.common.linkCopied),
-      () => console.error("Clipboard write failed"),
+      () => console.error('Clipboard write failed'),
     );
   };
 
@@ -105,8 +121,7 @@ export default function ItemDetailPage() {
     );
   }
 
-  const priceText =
-    item.price === 0 ? t.item.free : `¥${item.price.toLocaleString()}`;
+  const priceText = item.price === 0 ? t.item.free : `¥${item.price.toLocaleString()}`;
 
   return (
     <div className="p-6">
@@ -139,21 +154,14 @@ export default function ItemDetailPage() {
                 <>
                   <button
                     onClick={() =>
-                      setCurrentImage(
-                        (currentImage - 1 + item.images.length) %
-                          item.images.length,
-                      )
+                      setCurrentImage((currentImage - 1 + item.images.length) % item.images.length)
                     }
                     className="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 bg-black/40 text-white rounded-full flex items-center justify-center hover:bg-black/60"
                   >
                     <ChevronLeft className="w-5 h-5" />
                   </button>
                   <button
-                    onClick={() =>
-                      setCurrentImage(
-                        (currentImage + 1) % item.images.length,
-                      )
-                    }
+                    onClick={() => setCurrentImage((currentImage + 1) % item.images.length)}
                     className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 bg-black/40 text-white rounded-full flex items-center justify-center hover:bg-black/60"
                   >
                     <ChevronRight className="w-5 h-5" />
@@ -170,16 +178,10 @@ export default function ItemDetailPage() {
                     key={idx}
                     onClick={() => setCurrentImage(idx)}
                     className={`w-16 h-16 rounded-md overflow-hidden border-2 shrink-0 ${
-                      idx === currentImage
-                        ? "border-indigo-500"
-                        : "border-transparent"
+                      idx === currentImage ? 'border-indigo-500' : 'border-transparent'
                     }`}
                   >
-                    <img
-                      src={img}
-                      alt=""
-                      className="w-full h-full object-cover"
-                    />
+                    <img src={img} alt="" className="w-full h-full object-cover" />
                   </button>
                 ))}
               </div>
@@ -190,9 +192,7 @@ export default function ItemDetailPage() {
           <div>
             <div className="flex items-start gap-3">
               <div className="flex-1 min-w-0">
-                <h1 className="text-xl font-bold text-gray-900">
-                  {item.name}
-                </h1>
+                <h1 className="text-xl font-bold text-gray-900">{item.name}</h1>
                 {isTranslationVisible && translatedText && (
                   <p className="text-sm text-indigo-600 mt-1">{translatedText}</p>
                 )}
@@ -227,38 +227,28 @@ export default function ItemDetailPage() {
             </div>
 
             <p
-              className={`text-2xl font-bold mt-3 ${item.price === 0 ? "text-green-600" : "text-gray-900"}`}
+              className={`text-2xl font-bold mt-3 ${item.price === 0 ? 'text-green-600' : 'text-gray-900'}`}
             >
               {priceText}
             </p>
 
             {item.shop_name && (
               <div className="mt-4">
-                <span className="text-sm text-gray-500">
-                  {t.item.shop}:
-                </span>
-                <span className="ml-2 text-sm text-gray-700">
-                  {item.shop_name}
-                </span>
+                <span className="text-sm text-gray-500">{t.item.shop}:</span>
+                <span className="ml-2 text-sm text-gray-700">{item.shop_name}</span>
               </div>
             )}
 
             {item.category_name && (
               <div className="mt-2">
-                <span className="text-sm text-gray-500">
-                  {t.item.category}:
-                </span>
-                <span className="ml-2 text-sm text-gray-700">
-                  {item.category_name}
-                </span>
+                <span className="text-sm text-gray-500">{t.item.category}:</span>
+                <span className="ml-2 text-sm text-gray-700">{item.category_name}</span>
               </div>
             )}
 
             {item.tags.length > 0 && (
               <div className="mt-4">
-                <span className="text-sm text-gray-500 block mb-2">
-                  {t.item.tags}:
-                </span>
+                <span className="text-sm text-gray-500 block mb-2">{t.item.tags}:</span>
                 <div className="flex flex-wrap gap-1.5">
                   {item.tags.map((tag) => (
                     <span
@@ -283,9 +273,7 @@ export default function ItemDetailPage() {
             {item.description && (
               <div className="mt-6">
                 <div className="flex items-center gap-2 mb-2">
-                  <h3 className="text-sm font-medium text-gray-700">
-                    {t.item.description}
-                  </h3>
+                  <h3 className="text-sm font-medium text-gray-700">{t.item.description}</h3>
                   <button
                     onClick={() => descTranslate(item.description!)}
                     className="p-1 text-gray-400 hover:text-indigo-600 transition-colors"

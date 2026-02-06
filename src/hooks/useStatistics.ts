@@ -1,9 +1,9 @@
-import { useQuery } from "@tanstack/react-query";
-import { getAllStatistics } from "../lib/booth-api";
+import { useQuery } from '@tanstack/react-query';
+import { getAllStatistics } from '../lib/booth-api';
 
 export function useStatistics() {
   const query = useQuery({
-    queryKey: ["all-statistics"],
+    queryKey: ['all-statistics'],
     queryFn: getAllStatistics,
   });
 

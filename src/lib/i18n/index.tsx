@@ -1,36 +1,29 @@
-import {
-  createContext,
-  useContext,
-  useState,
-  useEffect,
-  useMemo,
-  type ReactNode,
-} from "react";
-import { ko } from "./ko";
-import { en } from "./en";
-import type { Language, Translations } from "./types";
+import { createContext, useContext, useState, useEffect, useMemo, type ReactNode } from 'react';
+import { ko } from './ko';
+import { en } from './en';
+import type { Language, Translations } from './types';
 
 export type { Language, Translations };
 
-const STORAGE_KEY = "boothhunter-language";
+const STORAGE_KEY = 'boothhunter-language';
 
 const translations: Record<Language, Translations> = { ko, en };
 
 export const LANGUAGE_OPTIONS: { value: Language; label: string; nativeLabel: string }[] = [
-  { value: "ko", label: "Korean", nativeLabel: "한국어" },
-  { value: "en", label: "English", nativeLabel: "English" },
+  { value: 'ko', label: 'Korean', nativeLabel: '한국어' },
+  { value: 'en', label: 'English', nativeLabel: 'English' },
 ];
 
 function getInitialLanguage(): Language {
-  if (typeof window !== "undefined") {
+  if (typeof window !== 'undefined') {
     const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored === "ko" || stored === "en") return stored;
-    
+    if (stored === 'ko' || stored === 'en') return stored;
+
     // Auto-detect from browser
     const browserLang = navigator.language.toLowerCase();
-    if (browserLang.startsWith("ko")) return "ko";
+    if (browserLang.startsWith('ko')) return 'ko';
   }
-  return "en";
+  return 'en';
 }
 
 interface I18nContextValue {
@@ -52,7 +45,7 @@ export function I18nProvider({ children }: { children: ReactNode }) {
   // Sync with localStorage on mount
   useEffect(() => {
     const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored === "ko" || stored === "en") {
+    if (stored === 'ko' || stored === 'en') {
       setLanguageState(stored);
     }
   }, []);
@@ -66,17 +59,13 @@ export function I18nProvider({ children }: { children: ReactNode }) {
     [language],
   );
 
-  return (
-    <I18nContext.Provider value={value}>
-      {children}
-    </I18nContext.Provider>
-  );
+  return <I18nContext.Provider value={value}>{children}</I18nContext.Provider>;
 }
 
 export function useI18n() {
   const ctx = useContext(I18nContext);
   if (!ctx) {
-    throw new Error("useI18n must be used within I18nProvider");
+    throw new Error('useI18n must be used within I18nProvider');
   }
   return ctx;
 }

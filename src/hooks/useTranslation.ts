@@ -1,6 +1,6 @@
-import { useState, useCallback, useRef } from "react";
-import { fetch } from "@tauri-apps/plugin-http";
-import { getCachedTranslation, saveCachedTranslation } from "../lib/booth-api";
+import { useState, useCallback, useRef } from 'react';
+import { fetch } from '@tauri-apps/plugin-http';
+import { getCachedTranslation, saveCachedTranslation } from '../lib/booth-api';
 
 // In-memory cache shared across all hook instances
 const memoryCache = new Map<string, string>();
@@ -9,9 +9,9 @@ const inflight = new Map<string, Promise<string>>();
 
 // Lingva API instances (fallback chain)
 const LINGVA_INSTANCES = [
-  "https://lingva.lunar.icu",
-  "https://translate.plausibility.cloud",
-  "https://lingva.ml",
+  'https://lingva.lunar.icu',
+  'https://translate.plausibility.cloud',
+  'https://lingva.ml',
 ];
 
 export function useTranslation() {
@@ -84,8 +84,8 @@ export function useTranslation() {
             try {
               const url = `${base}/api/v1/ja/ko/${encoded}`;
               const resp = await fetch(url, {
-                method: "GET",
-                headers: { "Accept": "application/json" },
+                method: 'GET',
+                headers: { Accept: 'application/json' },
               });
               if (!resp.ok) {
                 lastError = new Error(`${base} returned ${resp.status}`);
@@ -94,7 +94,7 @@ export function useTranslation() {
               const data = await resp.json();
               const translated = data.translation as string;
               if (!translated) {
-                lastError = new Error("No translation returned");
+                lastError = new Error('No translation returned');
                 continue;
               }
               return translated;
@@ -102,7 +102,7 @@ export function useTranslation() {
               lastError = e instanceof Error ? e : new Error(String(e));
             }
           }
-          throw lastError ?? new Error("All translation instances failed");
+          throw lastError ?? new Error('All translation instances failed');
         })();
         inflight.set(text, apiPromise);
         apiPromise.finally(() => inflight.delete(text));
@@ -118,13 +118,11 @@ export function useTranslation() {
       setIsTranslationVisible(true);
       // Save to SQLite in background
       saveCachedTranslation(text, translated).catch((e) =>
-        console.error("Failed to cache translation:", e),
+        console.error('Failed to cache translation:', e),
       );
     } catch (err) {
       if (currentTextRef.current !== text) return; // stale
-      setTranslationError(
-        err instanceof Error ? err.message : "Translation failed",
-      );
+      setTranslationError(err instanceof Error ? err.message : 'Translation failed');
     } finally {
       if (currentTextRef.current === text) {
         setIsTranslating(false);

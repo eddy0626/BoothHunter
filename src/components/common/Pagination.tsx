@@ -1,6 +1,6 @@
-import { ChevronLeft, ChevronRight } from "lucide-react";
-import { clsx } from "clsx";
-import { useI18n } from "../../lib/i18n";
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { clsx } from 'clsx';
+import { useI18n } from '../../lib/i18n';
 
 interface Props {
   currentPage: number;
@@ -8,18 +8,14 @@ interface Props {
   onPageChange: (page: number) => void;
 }
 
-export default function Pagination({
-  currentPage,
-  totalPages,
-  onPageChange,
-}: Props) {
+export default function Pagination({ currentPage, totalPages, onPageChange }: Props) {
   const { t, language } = useI18n();
   const pages = getPageNumbers(currentPage, totalPages);
 
-  const navLabel = language === "ko" ? "검색 결과 페이지 탐색" : "Search results pagination";
-  const prevLabel = language === "ko" ? "이전 페이지" : "Previous page";
-  const nextLabel = language === "ko" ? "다음 페이지" : "Next page";
-  const pageLabel = (p: number) => language === "ko" ? `${p} 페이지` : `Page ${p}`;
+  const navLabel = language === 'ko' ? '검색 결과 페이지 탐색' : 'Search results pagination';
+  const prevLabel = language === 'ko' ? '이전 페이지' : 'Previous page';
+  const nextLabel = language === 'ko' ? '다음 페이지' : 'Next page';
+  const pageLabel = (p: number) => (language === 'ko' ? `${p} 페이지` : `Page ${p}`);
 
   return (
     <nav role="navigation" aria-label={navLabel} className="flex items-center justify-center gap-1">
@@ -43,12 +39,10 @@ export default function Pagination({
             key={page}
             onClick={() => onPageChange(page)}
             aria-label={pageLabel(page)}
-            aria-current={page === currentPage ? "page" : undefined}
+            aria-current={page === currentPage ? 'page' : undefined}
             className={clsx(
-              "w-8 h-8 rounded-lg text-sm font-medium transition-colors",
-              page === currentPage
-                ? "bg-indigo-600 text-white"
-                : "text-gray-600 hover:bg-gray-100",
+              'w-8 h-8 rounded-lg text-sm font-medium transition-colors',
+              page === currentPage ? 'bg-indigo-600 text-white' : 'text-gray-600 hover:bg-gray-100',
             )}
           >
             {page}

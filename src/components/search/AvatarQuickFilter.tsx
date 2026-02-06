@@ -1,7 +1,7 @@
-import { useState } from "react";
-import { clsx } from "clsx";
-import { useI18n } from "../../lib/i18n";
-import { usePopularAvatars } from "../../hooks/usePopularAvatars";
+import { useState } from 'react';
+import { clsx } from 'clsx';
+import { useI18n } from '../../lib/i18n';
+import { usePopularAvatars } from '../../hooks/usePopularAvatars';
 
 interface Props {
   onSearch: (keyword: string, extra?: { category?: string }) => void;
@@ -21,7 +21,7 @@ export default function AvatarQuickFilter({ onSearch }: Props) {
       return;
     }
     setActiveAvatar(nameJa);
-    onSearch(keyword, { category: "3D衣装" });
+    onSearch(keyword, { category: '3D衣装' });
   };
 
   const handleContextMenu = (e: React.MouseEvent, nameJa: string) => {
@@ -47,12 +47,12 @@ export default function AvatarQuickFilter({ onSearch }: Props) {
             onClick={() => handleClick(avatar.name_ja)}
             onContextMenu={(e) => handleContextMenu(e, avatar.name_ja)}
             className={clsx(
-              "shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border transition-colors",
+              'shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border transition-colors',
               activeAvatar === avatar.name_ja
-                ? "bg-indigo-100 border-indigo-300 text-indigo-700"
-                : "bg-white border-gray-200 text-gray-600 hover:bg-gray-50 hover:border-gray-300",
+                ? 'bg-indigo-100 border-indigo-300 text-indigo-700'
+                : 'bg-white border-gray-200 text-gray-600 hover:bg-gray-50 hover:border-gray-300',
             )}
-            aria-label={`${avatar.name_ko} (${avatar.name_ja})${avatar.item_count > 0 ? ` - ${avatar.item_count} ${t.avatarFilter.items}` : ""}`}
+            aria-label={`${avatar.name_ko} (${avatar.name_ja})${avatar.item_count > 0 ? ` - ${avatar.item_count} ${t.avatarFilter.items}` : ''}`}
             aria-pressed={activeAvatar === avatar.name_ja}
             title={`${avatar.name_ko} (${avatar.name_ja})`}
           >

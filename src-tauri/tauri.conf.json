@@ -40,9 +40,7 @@
   "plugins": {
     "updater": {
       "pubkey": "YOUR_PUBLIC_KEY_HERE",
-      "endpoints": [
-        "https://github.com/eddy0626/BoothHunter/releases/latest/download/latest.json"
-      ],
+      "endpoints": ["https://github.com/eddy0626/BoothHunter/releases/latest/download/latest.json"],
       "windows": {
         "installMode": "passive"
       }

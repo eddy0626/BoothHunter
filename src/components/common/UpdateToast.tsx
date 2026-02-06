@@ -1,7 +1,7 @@
-import { useState } from "react";
-import { invoke } from "@tauri-apps/api/core";
-import { Download, X } from "lucide-react";
-import { useI18n } from "../../lib/i18n";
+import { useState } from 'react';
+import { invoke } from '@tauri-apps/api/core';
+import { Download, X } from 'lucide-react';
+import { useI18n } from '../../lib/i18n';
 
 interface UpdateInfo {
   version: string;
@@ -22,9 +22,9 @@ export default function UpdateToast({ update, onDismiss }: Props) {
     setInstalling(true);
     setError(false);
     try {
-      await invoke("install_update");
+      await invoke('install_update');
     } catch (e) {
-      console.error("Update installation failed:", e);
+      console.error('Update installation failed:', e);
       setError(true);
       setInstalling(false);
     }
@@ -48,11 +48,7 @@ export default function UpdateToast({ update, onDismiss }: Props) {
               <X className="w-4 h-4" />
             </button>
           </div>
-          {error && (
-            <p className="text-xs text-red-500 mt-1">
-              {t.updater.error}
-            </p>
-          )}
+          {error && <p className="text-xs text-red-500 mt-1">{t.updater.error}</p>}
           <div className="flex items-center justify-end gap-2 mt-3">
             <button
               onClick={onDismiss}

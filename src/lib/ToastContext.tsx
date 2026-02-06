@@ -1,4 +1,12 @@
-import { createContext, useCallback, useContext, useEffect, useRef, useState, type ReactNode } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+  type ReactNode,
+} from 'react';
 
 interface Toast {
   id: number;
@@ -36,9 +44,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
 
   return (
     <ToastDispatchContext.Provider value={showToast}>
-      <ToastStateContext.Provider value={toasts}>
-        {children}
-      </ToastStateContext.Provider>
+      <ToastStateContext.Provider value={toasts}>{children}</ToastStateContext.Provider>
     </ToastDispatchContext.Provider>
   );
 }
@@ -46,7 +52,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
 export function useToast() {
   const showToast = useContext(ToastDispatchContext);
   if (!showToast) {
-    throw new Error("useToast must be used within ToastProvider");
+    throw new Error('useToast must be used within ToastProvider');
   }
   return { showToast };
 }

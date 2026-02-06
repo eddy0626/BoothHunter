@@ -1,11 +1,11 @@
-import { memo } from "react";
-import { Link } from "react-router-dom";
-import { Heart, Link2, Languages, Loader2 } from "lucide-react";
-import type { BoothItem } from "../../lib/types";
-import { useI18n } from "../../lib/i18n";
-import FavoriteButton from "../favorites/FavoriteButton";
-import { useToast } from "../../lib/ToastContext";
-import { useTranslation } from "../../hooks/useTranslation";
+import { memo } from 'react';
+import { Link } from 'react-router-dom';
+import { Heart, Link2, Languages, Loader2 } from 'lucide-react';
+import type { BoothItem } from '../../lib/types';
+import { useI18n } from '../../lib/i18n';
+import FavoriteButton from '../favorites/FavoriteButton';
+import { useToast } from '../../lib/ToastContext';
+import { useTranslation } from '../../hooks/useTranslation';
 
 interface Props {
   item: BoothItem;
@@ -16,18 +16,18 @@ interface Props {
 
 export default memo(function ItemCard({ item, favorited, onAddFavorite, onRemoveFavorite }: Props) {
   const { t } = useI18n();
-  const thumbnail = item.images[0] || "";
-  const priceText =
-    item.price === 0 ? t.item.free : `¥${item.price.toLocaleString()}`;
+  const thumbnail = item.images[0] || '';
+  const priceText = item.price === 0 ? t.item.free : `¥${item.price.toLocaleString()}`;
   const { showToast } = useToast();
-  const { translatedText, isTranslating, isTranslationVisible, translationError, translate } = useTranslation();
+  const { translatedText, isTranslating, isTranslationVisible, translationError, translate } =
+    useTranslation();
 
   const handleCopyLink = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     navigator.clipboard.writeText(item.url).then(
       () => showToast(t.common.linkCopied),
-      () => console.error("Clipboard write failed"),
+      () => console.error('Clipboard write failed'),
     );
   };
 
@@ -95,14 +95,12 @@ export default memo(function ItemCard({ item, favorited, onAddFavorite, onRemove
         </div>
         <div className="mt-2 flex items-center justify-between">
           <span
-            className={`text-sm font-bold ${item.price === 0 ? "text-green-600" : "text-gray-900"}`}
+            className={`text-sm font-bold ${item.price === 0 ? 'text-green-600' : 'text-gray-900'}`}
           >
             {priceText}
           </span>
           {item.shop_name && (
-            <span className="text-xs text-gray-500 truncate max-w-[120px]">
-              {item.shop_name}
-            </span>
+            <span className="text-xs text-gray-500 truncate max-w-[120px]">{item.shop_name}</span>
           )}
         </div>
         <div className="mt-1.5 flex items-center gap-1.5 flex-wrap">

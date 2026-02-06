@@ -1,19 +1,19 @@
-import { memo, useCallback } from "react";
-import { Link } from "react-router-dom";
-import { Heart, Trash2 } from "lucide-react";
-import { useFavorites } from "../../hooks/useFavorites";
+import { memo, useCallback } from 'react';
+import { Link } from 'react-router-dom';
+import { Heart, Trash2 } from 'lucide-react';
+import { useFavorites } from '../../hooks/useFavorites';
 import {
   useCollections,
   useAllUserTags,
   useAllItemTagsBatch,
   useAllItemCollectionsBatch,
-} from "../../hooks/useCollections";
-import { setItemTags } from "../../lib/booth-api";
-import { useQueryClient } from "@tanstack/react-query";
-import { useI18n } from "../../lib/i18n";
-import type { FavoriteItem } from "../../lib/types";
-import TagEditor from "./TagEditor";
-import AddToCollectionMenu from "./AddToCollectionMenu";
+} from '../../hooks/useCollections';
+import { setItemTags } from '../../lib/booth-api';
+import { useQueryClient } from '@tanstack/react-query';
+import { useI18n } from '../../lib/i18n';
+import type { FavoriteItem } from '../../lib/types';
+import TagEditor from './TagEditor';
+import AddToCollectionMenu from './AddToCollectionMenu';
 
 interface Props {
   items?: FavoriteItem[];
@@ -29,11 +29,14 @@ export default memo(function FavoritesList({ items }: Props) {
   const { t } = useI18n();
   const displayItems = items ?? favorites;
 
-  const handleSetTags = useCallback(async (itemId: number, tags: string[]) => {
-    await setItemTags(itemId, tags);
-    qc.invalidateQueries({ queryKey: ["all-item-tags-batch"] });
-    qc.invalidateQueries({ queryKey: ["all-user-tags"] });
-  }, [qc]);
+  const handleSetTags = useCallback(
+    async (itemId: number, tags: string[]) => {
+      await setItemTags(itemId, tags);
+      qc.invalidateQueries({ queryKey: ['all-item-tags-batch'] });
+      qc.invalidateQueries({ queryKey: ['all-user-tags'] });
+    },
+    [qc],
+  );
 
   if (isLoading && !items) {
     return (
@@ -93,7 +96,9 @@ export default memo(function FavoritesList({ items }: Props) {
                   onRemoveFromCollection={removeItem}
                 />
                 <button
-                  onClick={() => removeFavorite(fav.item_id).catch((e) => console.error("Remove failed:", e))}
+                  onClick={() =>
+                    removeFavorite(fav.item_id).catch((e) => console.error('Remove failed:', e))
+                  }
                   className="p-1 text-gray-300 hover:text-red-500 transition-colors"
                   title={t.favorites.removed}
                 >
@@ -103,11 +108,9 @@ export default memo(function FavoritesList({ items }: Props) {
             </div>
             <div className="mt-2 flex items-center justify-between">
               <span
-                className={`text-sm font-bold ${fav.price === 0 ? "text-green-600" : "text-gray-900"}`}
+                className={`text-sm font-bold ${fav.price === 0 ? 'text-green-600' : 'text-gray-900'}`}
               >
-                {fav.price === 0
-                  ? t.item.free
-                  : `¥${fav.price.toLocaleString()}`}
+                {fav.price === 0 ? t.item.free : `¥${fav.price.toLocaleString()}`}
               </span>
               {fav.shop_name && (
                 <span className="text-xs text-gray-500 truncate max-w-[120px]">

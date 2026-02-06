@@ -1,5 +1,5 @@
-import { Component, type ReactNode } from "react";
-import { useI18n } from "../../lib/i18n";
+import { Component, type ReactNode } from 'react';
+import { useI18n } from '../../lib/i18n';
 
 interface Props {
   children: ReactNode;
@@ -33,7 +33,7 @@ export default class ErrorBoundary extends Component<Props, State> {
   }
 
   componentDidCatch(error: Error, info: React.ErrorInfo) {
-    console.error("App error:", error, info.componentStack);
+    console.error('App error:', error, info.componentStack);
   }
 
   render() {

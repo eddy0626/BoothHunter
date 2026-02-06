@@ -1,4 +1,4 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   getCollections,
   createCollection,
@@ -10,34 +10,33 @@ import {
   getAllUserTags,
   getAllItemTagsBatch,
   getAllItemCollectionsBatch,
-} from "../lib/booth-api";
-import type { FavoriteItem } from "../lib/types";
+} from '../lib/booth-api';
+import type { FavoriteItem } from '../lib/types';
 
 export function useCollections() {
   const qc = useQueryClient();
 
   const collectionsQuery = useQuery({
-    queryKey: ["collections"],
+    queryKey: ['collections'],
     queryFn: getCollections,
   });
 
   const createMut = useMutation({
     mutationFn: (params: { name: string; color?: string }) =>
       createCollection(params.name, params.color),
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["collections"] }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['collections'] }),
   });
 
   const renameMut = useMutation({
-    mutationFn: (params: { id: number; name: string }) =>
-      renameCollection(params.id, params.name),
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["collections"] }),
+    mutationFn: (params: { id: number; name: string }) => renameCollection(params.id, params.name),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['collections'] }),
   });
 
   const deleteMut = useMutation({
     mutationFn: (id: number) => deleteCollection(id),
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["collections"] });
-      qc.invalidateQueries({ queryKey: ["collection-items"] });
+      qc.invalidateQueries({ queryKey: ['collections'] });
+      qc.invalidateQueries({ queryKey: ['collection-items'] });
     },
   });
 
@@ -45,10 +44,10 @@ export function useCollections() {
     mutationFn: (params: { collectionId: number; itemId: number }) =>
       addToCollection(params.collectionId, params.itemId),
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["collections"] });
-      qc.invalidateQueries({ queryKey: ["collection-items"] });
-      qc.invalidateQueries({ queryKey: ["item-collections"] });
-      qc.invalidateQueries({ queryKey: ["all-item-collections-batch"] });
+      qc.invalidateQueries({ queryKey: ['collections'] });
+      qc.invalidateQueries({ queryKey: ['collection-items'] });
+      qc.invalidateQueries({ queryKey: ['item-collections'] });
+      qc.invalidateQueries({ queryKey: ['all-item-collections-batch'] });
     },
   });
 
@@ -56,10 +55,10 @@ export function useCollections() {
     mutationFn: (params: { collectionId: number; itemId: number }) =>
       removeFromCollection(params.collectionId, params.itemId),
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["collections"] });
-      qc.invalidateQueries({ queryKey: ["collection-items"] });
-      qc.invalidateQueries({ queryKey: ["item-collections"] });
-      qc.invalidateQueries({ queryKey: ["all-item-collections-batch"] });
+      qc.invalidateQueries({ queryKey: ['collections'] });
+      qc.invalidateQueries({ queryKey: ['collection-items'] });
+      qc.invalidateQueries({ queryKey: ['item-collections'] });
+      qc.invalidateQueries({ queryKey: ['all-item-collections-batch'] });
     },
   });
 
@@ -76,7 +75,7 @@ export function useCollections() {
 
 export function useCollectionItems(collectionId: number | null) {
   return useQuery<FavoriteItem[]>({
-    queryKey: ["collection-items", collectionId],
+    queryKey: ['collection-items', collectionId],
     queryFn: () => getCollectionItems(collectionId!),
     enabled: collectionId != null,
   });
@@ -84,7 +83,7 @@ export function useCollectionItems(collectionId: number | null) {
 
 export function useAllUserTags() {
   return useQuery<string[]>({
-    queryKey: ["all-user-tags"],
+    queryKey: ['all-user-tags'],
     queryFn: getAllUserTags,
   });
 }
@@ -92,7 +91,7 @@ export function useAllUserTags() {
 /** Batch: all item→tags mappings for favorited items (single IPC call) */
 export function useAllItemTagsBatch() {
   return useQuery<Record<number, string[]>>({
-    queryKey: ["all-item-tags-batch"],
+    queryKey: ['all-item-tags-batch'],
     queryFn: getAllItemTagsBatch,
     staleTime: 30 * 1000,
   });
@@ -101,7 +100,7 @@ export function useAllItemTagsBatch() {
 /** Batch: all item→collection mappings for favorited items (single IPC call) */
 export function useAllItemCollectionsBatch() {
   return useQuery<Record<number, number[]>>({
-    queryKey: ["all-item-collections-batch"],
+    queryKey: ['all-item-collections-batch'],
     queryFn: getAllItemCollectionsBatch,
     staleTime: 30 * 1000,
   });

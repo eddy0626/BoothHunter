@@ -1,18 +1,18 @@
-import { useEffect, useState } from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { listen } from "@tauri-apps/api/event";
-import { SearchProvider } from "./lib/SearchContext";
-import { I18nProvider } from "./lib/i18n";
-import { ToastProvider } from "./lib/ToastContext";
-import ErrorBoundary from "./components/common/ErrorBoundary";
-import UpdateToast from "./components/common/UpdateToast";
-import ToastContainer from "./components/common/Toast";
-import AppLayout from "./components/layout/AppLayout";
-import SearchPage from "./pages/SearchPage";
-import FavoritesPage from "./pages/FavoritesPage";
-import StatsPage from "./pages/StatsPage";
-import ItemDetailPage from "./pages/ItemDetailPage";
+import { useEffect, useState } from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { listen } from '@tauri-apps/api/event';
+import { SearchProvider } from './lib/SearchContext';
+import { I18nProvider } from './lib/i18n';
+import { ToastProvider } from './lib/ToastContext';
+import ErrorBoundary from './components/common/ErrorBoundary';
+import UpdateToast from './components/common/UpdateToast';
+import ToastContainer from './components/common/Toast';
+import AppLayout from './components/layout/AppLayout';
+import SearchPage from './pages/SearchPage';
+import FavoritesPage from './pages/FavoritesPage';
+import StatsPage from './pages/StatsPage';
+import ItemDetailPage from './pages/ItemDetailPage';
 
 interface UpdateInfo {
   version: string;
@@ -34,7 +34,7 @@ function App() {
   const [updateInfo, setUpdateInfo] = useState<UpdateInfo | null>(null);
 
   useEffect(() => {
-    const unlisten = listen<UpdateInfo>("update-available", (event) => {
+    const unlisten = listen<UpdateInfo>('update-available', (event) => {
       setUpdateInfo(event.payload);
     });
 
@@ -63,12 +63,7 @@ function App() {
             </BrowserRouter>
           </ToastProvider>
         </ErrorBoundary>
-        {updateInfo && (
-          <UpdateToast
-            update={updateInfo}
-            onDismiss={() => setUpdateInfo(null)}
-          />
-        )}
+        {updateInfo && <UpdateToast update={updateInfo} onDismiss={() => setUpdateInfo(null)} />}
       </I18nProvider>
     </QueryClientProvider>
   );

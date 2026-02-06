@@ -38,6 +38,10 @@ flowchart LR
 - `npm run dev` — start Vite dev server (port 1420)
 - `npm run build` — type-check (`tsc`) + production build (`vite build`)
 - `npm run preview` — preview production build
+- `npm run lint` — run ESLint on the project
+- `npm run lint:fix` — run ESLint with auto-fix
+- `npm run format` — format all files with Prettier
+- `npm run format:check` — check formatting without writing
 
 ### Tauri
 
@@ -55,7 +59,9 @@ flowchart LR
 ### Frontend changes
 
 1. `npx tsc` — ensure no type errors
-2. `npm run build` — ensure production build succeeds
+2. `npm run lint` — ensure no lint errors
+3. `npm run format:check` — ensure consistent formatting
+4. `npm run build` — ensure production build succeeds
 
 ### Rust changes (run from `src-tauri/`)
 

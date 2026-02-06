@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { NavLink, useNavigate, useSearchParams } from "react-router-dom";
+import { useState } from 'react';
+import { NavLink, useNavigate, useSearchParams } from 'react-router-dom';
 import {
   Search,
   Heart,
@@ -16,12 +16,12 @@ import {
   Play,
   Wrench,
   Sparkles,
-} from "lucide-react";
-import { clsx } from "clsx";
-import { VRCHAT_CATEGORIES } from "../../lib/constants";
-import { useSearchContext } from "../../lib/SearchContext";
-import { useI18n, getCategoryLabel } from "../../lib/i18n";
-import LanguageSelector from "../common/LanguageSelector";
+} from 'lucide-react';
+import { clsx } from 'clsx';
+import { VRCHAT_CATEGORIES } from '../../lib/constants';
+import { useSearchContext } from '../../lib/SearchContext';
+import { useI18n, getCategoryLabel } from '../../lib/i18n';
+import LanguageSelector from '../common/LanguageSelector';
 
 const ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
   User,
@@ -44,34 +44,37 @@ export default function Sidebar() {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const navItems = [
-    { to: "/", icon: Search, label: t.nav.search },
-    { to: "/favorites", icon: Heart, label: t.nav.favorites },
-    { to: "/stats", icon: BarChart3, label: t.nav.stats },
+    { to: '/', icon: Search, label: t.nav.search },
+    { to: '/favorites', icon: Heart, label: t.nav.favorites },
+    { to: '/stats', icon: BarChart3, label: t.nav.stats },
   ];
 
   const handleCategoryClick = (jaName: string) => {
     const next = activeCategory === jaName ? null : jaName;
     setActiveCategory(next);
 
-    if (searchParams.has("q")) {
+    if (searchParams.has('q')) {
       // Search is active — update cat/sort in-place
-      setSearchParams((prev) => {
-        const updated = new URLSearchParams(prev);
-        if (next) {
-          updated.set("cat", next);
-          updated.set("sort", "popular");
-        } else {
-          updated.delete("cat");
-          updated.delete("sort");
-        }
-        updated.set("page", "1");
-        return updated;
-      }, { replace: true });
+      setSearchParams(
+        (prev) => {
+          const updated = new URLSearchParams(prev);
+          if (next) {
+            updated.set('cat', next);
+            updated.set('sort', 'popular');
+          } else {
+            updated.delete('cat');
+            updated.delete('sort');
+          }
+          updated.set('page', '1');
+          return updated;
+        },
+        { replace: true },
+      );
     } else if (next) {
       // No search active — start a category browse
       navigate(`/?q=&cat=${encodeURIComponent(next)}&sort=popular`);
     } else {
-      navigate("/");
+      navigate('/');
     }
   };
 
@@ -80,9 +83,7 @@ export default function Sidebar() {
       <div className="p-4 border-b border-gray-200">
         <div className="flex items-center gap-2">
           <Store className="w-6 h-6 text-indigo-600" />
-          <h1 className="text-lg font-bold text-gray-900">
-            {t.appName}
-          </h1>
+          <h1 className="text-lg font-bold text-gray-900">{t.appName}</h1>
         </div>
         <p className="text-xs text-gray-500 mt-1">Booth.pm {t.nav.search}</p>
       </div>
@@ -93,10 +94,10 @@ export default function Sidebar() {
             to={item.to}
             className={({ isActive }) =>
               clsx(
-                "flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors",
+                'flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors',
                 isActive
-                  ? "bg-indigo-50 text-indigo-700"
-                  : "text-gray-600 hover:bg-gray-100 hover:text-gray-900",
+                  ? 'bg-indigo-50 text-indigo-700'
+                  : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900',
               )
             }
           >
@@ -113,10 +114,7 @@ export default function Sidebar() {
           >
             <span>{t.nav.vrchat}</span>
             <ChevronDown
-              className={clsx(
-                "w-3.5 h-3.5 transition-transform",
-                !isCategoryOpen && "-rotate-90",
-              )}
+              className={clsx('w-3.5 h-3.5 transition-transform', !isCategoryOpen && '-rotate-90')}
             />
           </button>
           {isCategoryOpen && (
@@ -128,10 +126,10 @@ export default function Sidebar() {
                     key={cat.jaName}
                     onClick={() => handleCategoryClick(cat.jaName)}
                     className={clsx(
-                      "flex items-center gap-2.5 w-full px-3 py-1.5 rounded-lg text-sm transition-colors text-left",
+                      'flex items-center gap-2.5 w-full px-3 py-1.5 rounded-lg text-sm transition-colors text-left',
                       activeCategory === cat.jaName
-                        ? "bg-indigo-50 text-indigo-700 font-medium"
-                        : "text-gray-600 hover:bg-gray-100 hover:text-gray-900",
+                        ? 'bg-indigo-50 text-indigo-700 font-medium'
+                        : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900',
                     )}
                   >
                     {Icon && <Icon className="w-3.5 h-3.5 shrink-0" />}

@@ -1,6 +1,6 @@
-import { Heart, FolderOpen, Tag, Search } from "lucide-react";
-import { useStatistics } from "../hooks/useStatistics";
-import { useI18n } from "../lib/i18n";
+import { Heart, FolderOpen, Tag, Search } from 'lucide-react';
+import { useStatistics } from '../hooks/useStatistics';
+import { useI18n } from '../lib/i18n';
 
 // ── Reusable bar component ────────────────────────────
 
@@ -8,7 +8,7 @@ function HorizontalBar({
   label,
   value,
   maxValue,
-  color = "bg-indigo-500",
+  color = 'bg-indigo-500',
 }: {
   label: string;
   value: number;
@@ -18,18 +18,14 @@ function HorizontalBar({
   const pct = maxValue > 0 ? (value / maxValue) * 100 : 0;
   return (
     <div className="flex items-center gap-3">
-      <span className="text-xs text-gray-600 w-24 truncate text-right shrink-0">
-        {label}
-      </span>
+      <span className="text-xs text-gray-600 w-24 truncate text-right shrink-0">{label}</span>
       <div className="flex-1 bg-gray-100 rounded-full h-5 overflow-hidden">
         <div
           className={`${color} h-full rounded-full transition-all duration-500`}
           style={{ width: `${Math.max(pct, 1)}%` }}
         />
       </div>
-      <span className="text-xs font-medium text-gray-700 w-8 text-right shrink-0">
-        {value}
-      </span>
+      <span className="text-xs font-medium text-gray-700 w-8 text-right shrink-0">{value}</span>
     </div>
   );
 }
@@ -65,13 +61,7 @@ function StatCard({
 
 // ── Section wrapper ───────────────────────────────────
 
-function Section({
-  title,
-  children,
-}: {
-  title: string;
-  children: React.ReactNode;
-}) {
+function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div className="bg-white rounded-xl border border-gray-200 p-5">
       <h3 className="text-sm font-semibold text-gray-700 mb-4">{title}</h3>
@@ -83,17 +73,8 @@ function Section({
 // ── Page ──────────────────────────────────────────────
 
 export default function StatsPage() {
-  const {
-    stats,
-    categories,
-    prices,
-    tags,
-    searches,
-    monthly,
-    shops,
-    isLoading,
-    isError,
-  } = useStatistics();
+  const { stats, categories, prices, tags, searches, monthly, shops, isLoading, isError } =
+    useStatistics();
   const { t } = useI18n();
 
   if (isLoading) {
@@ -112,8 +93,7 @@ export default function StatsPage() {
     );
   }
 
-  const maxOf = (arr: { count: number }[]) =>
-    arr.reduce((m, x) => Math.max(m, x.count), 1);
+  const maxOf = (arr: { count: number }[]) => arr.reduce((m, x) => Math.max(m, x.count), 1);
   const catMax = maxOf(categories);
   const priceMax = maxOf(prices);
   const tagMax = maxOf(tags);
@@ -141,12 +121,7 @@ export default function StatsPage() {
             value={stats?.collections_count ?? 0}
             color="bg-indigo-500"
           />
-          <StatCard
-            icon={Tag}
-            label="태그"
-            value={stats?.tags_count ?? 0}
-            color="bg-amber-500"
-          />
+          <StatCard icon={Tag} label="태그" value={stats?.tags_count ?? 0} color="bg-amber-500" />
           <StatCard
             icon={Search}
             label="총 검색"
@@ -184,7 +159,8 @@ export default function StatsPage() {
             ) : (
               <div className="space-y-2">
                 {prices.map((p) => {
-                  const priceLabel = t.priceBuckets[p.label as keyof typeof t.priceBuckets] ?? `¥${p.label}`;
+                  const priceLabel =
+                    t.priceBuckets[p.label as keyof typeof t.priceBuckets] ?? `¥${p.label}`;
                   return (
                     <HorizontalBar
                       key={p.label}
@@ -252,13 +228,8 @@ export default function StatsPage() {
                 {monthly.map((m) => {
                   const pct = monthMax > 0 ? (m.count / monthMax) * 100 : 0;
                   return (
-                    <div
-                      key={m.month}
-                      className="flex-1 flex flex-col items-center gap-1"
-                    >
-                      <span className="text-[10px] text-gray-500 font-medium">
-                        {m.count}
-                      </span>
+                    <div key={m.month} className="flex-1 flex flex-col items-center gap-1">
+                      <span className="text-[10px] text-gray-500 font-medium">{m.count}</span>
                       <div className="w-full bg-gray-100 rounded-t flex-1 relative">
                         <div
                           className="absolute bottom-0 w-full bg-pink-400 rounded-t transition-all duration-500"

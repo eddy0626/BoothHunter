@@ -1,7 +1,7 @@
-import type { BoothItem } from "../../lib/types";
-import { useI18n } from "../../lib/i18n";
-import { useFavorites } from "../../hooks/useFavorites";
-import ItemCard from "./ItemCard";
+import type { BoothItem } from '../../lib/types';
+import { useI18n } from '../../lib/i18n';
+import { useFavorites } from '../../hooks/useFavorites';
+import ItemCard from './ItemCard';
 
 interface Props {
   items: BoothItem[];
@@ -10,12 +10,7 @@ interface Props {
   totalCount?: number | null;
 }
 
-export default function SearchResults({
-  items,
-  isLoading,
-  error,
-  totalCount,
-}: Props) {
+export default function SearchResults({ items, isLoading, error, totalCount }: Props) {
   const { isFavorite, addFavorite, removeFavorite } = useFavorites();
   const { t, language } = useI18n();
 
@@ -23,7 +18,10 @@ export default function SearchResults({
     return (
       <div className="flex items-center justify-center py-20" role="status" aria-live="polite">
         <div className="flex flex-col items-center gap-3">
-          <div className="w-8 h-8 border-3 border-indigo-600 border-t-transparent rounded-full animate-spin" aria-hidden="true" />
+          <div
+            className="w-8 h-8 border-3 border-indigo-600 border-t-transparent rounded-full animate-spin"
+            aria-hidden="true"
+          />
           <p className="text-sm text-gray-500">{t.search.searching}</p>
         </div>
       </div>
@@ -46,17 +44,14 @@ export default function SearchResults({
     );
   }
 
-  const resultsText = language === "ko" 
-    ? `총 ${totalCount?.toLocaleString()}개의 결과`
-    : `${totalCount?.toLocaleString()} results`;
+  const resultsText =
+    language === 'ko'
+      ? `총 ${totalCount?.toLocaleString()}개의 결과`
+      : `${totalCount?.toLocaleString()} results`;
 
   return (
     <div>
-      {totalCount != null && (
-        <p className="text-sm text-gray-500 mb-4">
-          {resultsText}
-        </p>
-      )}
+      {totalCount != null && <p className="text-sm text-gray-500 mb-4">{resultsText}</p>}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
         {items.map((item) => (
           <ItemCard

@@ -1,6 +1,6 @@
-import { useState, useRef } from "react";
-import { X } from "lucide-react";
-import { useI18n } from "../../lib/i18n";
+import { useState, useRef } from 'react';
+import { X } from 'lucide-react';
+import { useI18n } from '../../lib/i18n';
 
 interface Props {
   itemId: number;
@@ -10,7 +10,7 @@ interface Props {
 }
 
 export default function TagEditor({ itemId, tags, allUserTags, onSetTags }: Props) {
-  const [input, setInput] = useState("");
+  const [input, setInput] = useState('');
   const [showSuggestions, setShowSuggestions] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const { t } = useI18n();
@@ -24,23 +24,26 @@ export default function TagEditor({ itemId, tags, allUserTags, onSetTags }: Prop
     if (!trimmed || tags.includes(trimmed)) return;
     try {
       await onSetTags(itemId, [...tags, trimmed]);
-      setInput("");
+      setInput('');
       setShowSuggestions(false);
     } catch (e) {
-      console.error("Add tag failed:", e);
+      console.error('Add tag failed:', e);
     }
   };
 
   const removeTag = async (tag: string) => {
     try {
-      await onSetTags(itemId, tags.filter((t) => t !== tag));
+      await onSetTags(
+        itemId,
+        tags.filter((t) => t !== tag),
+      );
     } catch (e) {
-      console.error("Remove tag failed:", e);
+      console.error('Remove tag failed:', e);
     }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" && input.trim()) {
+    if (e.key === 'Enter' && input.trim()) {
       e.preventDefault();
       addTag(input);
     }
@@ -55,10 +58,7 @@ export default function TagEditor({ itemId, tags, allUserTags, onSetTags }: Prop
             className="inline-flex items-center gap-0.5 px-1.5 py-0.5 text-xs bg-indigo-100 text-indigo-700 rounded"
           >
             {tag}
-            <button
-              onClick={() => removeTag(tag)}
-              className="hover:text-indigo-900"
-            >
+            <button onClick={() => removeTag(tag)} className="hover:text-indigo-900">
               <X className="w-2.5 h-2.5" />
             </button>
           </span>
@@ -74,7 +74,7 @@ export default function TagEditor({ itemId, tags, allUserTags, onSetTags }: Prop
             onFocus={() => setShowSuggestions(true)}
             onBlur={() => setTimeout(() => setShowSuggestions(false), 150)}
             onKeyDown={handleKeyDown}
-            placeholder={tags.length === 0 ? t.tags.addTag : "+"}
+            placeholder={tags.length === 0 ? t.tags.addTag : '+'}
             maxLength={100}
             className="w-20 px-1 py-0.5 text-xs border-none outline-none bg-transparent"
           />

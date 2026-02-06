@@ -1,8 +1,8 @@
-import { useState, useRef, useEffect, useCallback, type FormEvent } from "react";
-import { Search } from "lucide-react";
-import { clsx } from "clsx";
-import { useI18n } from "../../lib/i18n";
-import { getSuggestions, type SearchSuggestion } from "../../lib/search-suggestions";
+import { useState, useRef, useEffect, useCallback, type FormEvent } from 'react';
+import { Search } from 'lucide-react';
+import { clsx } from 'clsx';
+import { useI18n } from '../../lib/i18n';
+import { getSuggestions, type SearchSuggestion } from '../../lib/search-suggestions';
 
 interface Props {
   onSearch: (keyword: string) => void;
@@ -10,11 +10,7 @@ interface Props {
   isLoading?: boolean;
 }
 
-export default function SearchBar({
-  onSearch,
-  initialKeyword = "",
-  isLoading,
-}: Props) {
+export default function SearchBar({ onSearch, initialKeyword = '', isLoading }: Props) {
   const [keyword, setKeyword] = useState(initialKeyword);
   const { t } = useI18n();
 
@@ -68,16 +64,16 @@ export default function SearchBar({
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (!showDropdown || suggestions.length === 0) return;
 
-    if (e.key === "ArrowDown") {
+    if (e.key === 'ArrowDown') {
       e.preventDefault();
       setSelectedIdx((prev) => (prev + 1) % suggestions.length);
-    } else if (e.key === "ArrowUp") {
+    } else if (e.key === 'ArrowUp') {
       e.preventDefault();
       setSelectedIdx((prev) => (prev <= 0 ? suggestions.length - 1 : prev - 1));
-    } else if (e.key === "Enter" && selectedIdx >= 0) {
+    } else if (e.key === 'Enter' && selectedIdx >= 0) {
       e.preventDefault();
       handleSelectSuggestion(suggestions[selectedIdx]);
-    } else if (e.key === "Escape") {
+    } else if (e.key === 'Escape') {
       setShowDropdown(false);
     }
   };
@@ -94,8 +90,8 @@ export default function SearchBar({
         setShowDropdown(false);
       }
     };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
   // Cleanup debounce
@@ -132,10 +128,10 @@ export default function SearchBar({
                 type="button"
                 onClick={() => handleSelectSuggestion(s)}
                 className={clsx(
-                  "w-full flex items-center justify-between px-4 py-2.5 text-sm text-left transition-colors",
+                  'w-full flex items-center justify-between px-4 py-2.5 text-sm text-left transition-colors',
                   idx === selectedIdx
-                    ? "bg-indigo-50 text-indigo-700"
-                    : "hover:bg-gray-50 text-gray-700",
+                    ? 'bg-indigo-50 text-indigo-700'
+                    : 'hover:bg-gray-50 text-gray-700',
                 )}
               >
                 <div className="flex items-center gap-2 min-w-0">
@@ -145,12 +141,12 @@ export default function SearchBar({
                 </div>
                 <span
                   className={clsx(
-                    "shrink-0 ml-2 px-1.5 py-0.5 rounded text-[10px] font-medium",
-                    s.category === "avatar" && "bg-purple-100 text-purple-700",
-                    s.category === "item" && "bg-blue-100 text-blue-700",
-                    s.category === "vrc" && "bg-green-100 text-green-700",
-                    s.category === "katakana" && "bg-orange-100 text-orange-700",
-                    s.category === "mixed" && "bg-gray-100 text-gray-600",
+                    'shrink-0 ml-2 px-1.5 py-0.5 rounded text-[10px] font-medium',
+                    s.category === 'avatar' && 'bg-purple-100 text-purple-700',
+                    s.category === 'item' && 'bg-blue-100 text-blue-700',
+                    s.category === 'vrc' && 'bg-green-100 text-green-700',
+                    s.category === 'katakana' && 'bg-orange-100 text-orange-700',
+                    s.category === 'mixed' && 'bg-gray-100 text-gray-600',
                   )}
                 >
                   {CATEGORY_LABELS[s.category]}

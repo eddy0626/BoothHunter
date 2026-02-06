@@ -1,16 +1,14 @@
-import { ALL_DICT, type DictEntry } from "./korean-dict";
-import { containsHangul, hangulToKatakana } from "./hangul-katakana";
+import { ALL_DICT, type DictEntry } from './korean-dict';
+import { containsHangul, hangulToKatakana } from './hangul-katakana';
 
 export interface SearchSuggestion {
   original: string;
   converted: string;
-  category: DictEntry["category"] | "katakana" | "mixed";
+  category: DictEntry['category'] | 'katakana' | 'mixed';
 }
 
 function matchDict(token: string): DictEntry | undefined {
-  return ALL_DICT.find(
-    (entry) => entry.ko === token || token.includes(entry.ko),
-  );
+  return ALL_DICT.find((entry) => entry.ko === token || token.includes(entry.ko));
 }
 
 function convertToken(token: string): SearchSuggestion | null {
@@ -26,14 +24,12 @@ function convertToken(token: string): SearchSuggestion | null {
   }
 
   if (dictMatch) {
-    const remaining = token.replace(dictMatch.ko, "");
-    const convertedRemaining = containsHangul(remaining)
-      ? hangulToKatakana(remaining)
-      : remaining;
+    const remaining = token.replace(dictMatch.ko, '');
+    const convertedRemaining = containsHangul(remaining) ? hangulToKatakana(remaining) : remaining;
     return {
       original: token,
       converted: dictMatch.ja + convertedRemaining,
-      category: "mixed",
+      category: 'mixed',
     };
   }
 
@@ -42,7 +38,7 @@ function convertToken(token: string): SearchSuggestion | null {
     return {
       original: token,
       converted: katakana,
-      category: "katakana",
+      category: 'katakana',
     };
   }
 
@@ -76,13 +72,13 @@ export function getSuggestions(input: string): SearchSuggestion[] {
       const result = convertToken(token);
       return result ? result.converted : token;
     });
-    const combined = convertedTokens.join(" ");
+    const combined = convertedTokens.join(' ');
     if (combined !== input.trim() && !seen.has(combined)) {
       seen.add(combined);
       suggestions.push({
         original: input.trim(),
         converted: combined,
-        category: tokens.length > 1 ? "mixed" : "katakana",
+        category: tokens.length > 1 ? 'mixed' : 'katakana',
       });
     }
   }
@@ -105,7 +101,7 @@ export function getSuggestions(input: string): SearchSuggestion[] {
     suggestions.push({
       original: input.trim(),
       converted: fullKatakana,
-      category: "katakana",
+      category: 'katakana',
     });
   }
 

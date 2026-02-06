@@ -1,4 +1,4 @@
-import { createContext, useContext, useMemo, useState, type ReactNode } from "react";
+import { createContext, useContext, useMemo, useState, type ReactNode } from 'react';
 
 interface SearchContextValue {
   activeCategory: string | null;
@@ -10,22 +10,15 @@ const SearchContext = createContext<SearchContextValue | null>(null);
 export function SearchProvider({ children }: { children: ReactNode }) {
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
 
-  const value = useMemo(
-    () => ({ activeCategory, setActiveCategory }),
-    [activeCategory],
-  );
+  const value = useMemo(() => ({ activeCategory, setActiveCategory }), [activeCategory]);
 
-  return (
-    <SearchContext.Provider value={value}>
-      {children}
-    </SearchContext.Provider>
-  );
+  return <SearchContext.Provider value={value}>{children}</SearchContext.Provider>;
 }
 
 export function useSearchContext() {
   const ctx = useContext(SearchContext);
   if (!ctx) {
-    throw new Error("useSearchContext must be used within SearchProvider");
+    throw new Error('useSearchContext must be used within SearchProvider');
   }
   return ctx;
 }

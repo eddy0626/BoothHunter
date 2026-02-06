@@ -1,6 +1,6 @@
-import { fetch } from "@tauri-apps/plugin-http";
-import { invoke } from "@tauri-apps/api/core";
-import { parseSearchHtml, parseItemDetailHtml } from "./booth-parser";
+import { fetch } from '@tauri-apps/plugin-http';
+import { invoke } from '@tauri-apps/api/core';
+import { parseSearchHtml, parseItemDetailHtml } from './booth-parser';
 import type {
   BoothItem,
   SearchParams,
@@ -8,22 +8,20 @@ import type {
   FavoriteItem,
   Collection,
   AllStatistics,
-} from "./types";
+} from './types';
 
 // ── Rate limiters (separate queues for different priorities) ──
 
 const RATE_LIMIT_MS = 1000;
 const HEADERS = {
-  "User-Agent":
-    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+  'User-Agent':
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
 };
 
 function createRateLimiter(delayMs: number) {
   let queue: Promise<void> = Promise.resolve();
   return async function limitedFetch(url: string): Promise<Response> {
-    const ticket = queue.then(
-      () => new Promise<void>((r) => setTimeout(r, delayMs)),
-    );
+    const ticket = queue.then(() => new Promise<void>((r) => setTimeout(r, delayMs)));
     queue = ticket;
     await ticket;
     return fetch(url, { headers: HEADERS });
@@ -44,7 +42,7 @@ const backgroundFetch = createRateLimiter(1500);
 function buildSearchUrl(params: SearchParams): string {
   const page = Math.min(params.page ?? 1, 10_000);
   const keyword = params.keyword.trim();
-  const keywordEmpty = keyword === "";
+  const keywordEmpty = keyword === '';
 
   let url: string;
   if (params.category) {
@@ -57,13 +55,13 @@ function buildSearchUrl(params: SearchParams): string {
     url = `https://booth.pm/ja/items?q=${encodeURIComponent(keyword)}&page=${page}`;
   }
 
-  const validSorts = ["new", "popular", "price_asc", "price_desc"];
+  const validSorts = ['new', 'popular', 'price_asc', 'price_desc'];
   if (params.sort && validSorts.includes(params.sort)) {
     url += `&sort=${params.sort}`;
   }
 
   if (params.only_free) {
-    url += "&max_price=0";
+    url += '&max_price=0';
   } else {
     if (params.price_min != null) url += `&min_price=${params.price_min}`;
     if (params.price_max != null) url += `&max_price=${params.price_max}`;
@@ -81,7 +79,7 @@ export async function searchBooth(params: SearchParams): Promise<SearchResult> {
   const url = buildSearchUrl(params);
   const resp = await rateLimitedFetch(url);
 
-  if (resp.status === 429) throw new Error("Rate limited by Booth.pm");
+  if (resp.status === 429) throw new Error('Rate limited by Booth.pm');
   if (!resp.ok) throw new Error(`Search returned ${resp.status}`);
 
   const html = await resp.text();
@@ -99,9 +97,7 @@ export async function searchBooth(params: SearchParams): Promise<SearchResult> {
 export async function getBoothItem(itemId: number): Promise<BoothItem> {
   // Try JSON API first
   try {
-    const resp = await rateLimitedFetch(
-      `https://booth.pm/ja/items/${itemId}.json`,
-    );
+    const resp = await rateLimitedFetch(`https://booth.pm/ja/items/${itemId}.json`);
     if (resp.ok) {
       const data = await resp.json();
       const item = jsonToBoothItem(data);
@@ -112,10 +108,8 @@ export async function getBoothItem(itemId: number): Promise<BoothItem> {
   }
 
   // Fallback to HTML
-  const resp = await rateLimitedFetch(
-    `https://booth.pm/ja/items/${itemId}`,
-  );
-  if (resp.status === 429) throw new Error("Rate limited by Booth.pm");
+  const resp = await rateLimitedFetch(`https://booth.pm/ja/items/${itemId}`);
+  if (resp.status === 429) throw new Error('Rate limited by Booth.pm');
   if (!resp.ok) throw new Error(`Item ${itemId} not found`);
 
   const html = await resp.text();
@@ -127,9 +121,9 @@ export async function getBoothItem(itemId: number): Promise<BoothItem> {
 // ── JSON item parser (mirrors Rust BoothJsonItemDetail) ──
 
 function parsePrice(val: unknown): number {
-  if (typeof val === "number") return val;
-  if (typeof val === "string") {
-    const cleaned = val.replace(/\D/g, "");
+  if (typeof val === 'number') return val;
+  if (typeof val === 'string') {
+    const cleaned = val.replace(/\D/g, '');
     return Number(cleaned) || 0;
   }
   return 0;
@@ -143,9 +137,8 @@ function jsonToBoothItem(data: Record<string, unknown>): BoothItem | null {
   if (Array.isArray(data.images)) {
     for (const img of data.images) {
       const src =
-        (img as Record<string, unknown>).original ??
-        (img as Record<string, unknown>).resized;
-      if (typeof src === "string") images.push(src);
+        (img as Record<string, unknown>).original ?? (img as Record<string, unknown>).resized;
+      if (typeof src === 'string') images.push(src);
     }
   }
 
@@ -153,7 +146,7 @@ function jsonToBoothItem(data: Record<string, unknown>): BoothItem | null {
   if (Array.isArray(data.tags)) {
     for (const t of data.tags) {
       const name = (t as Record<string, unknown>).name;
-      if (typeof name === "string") tags.push(name);
+      if (typeof name === 'string') tags.push(name);
     }
   }
 
@@ -161,17 +154,16 @@ function jsonToBoothItem(data: Record<string, unknown>): BoothItem | null {
   const shop = data.shop as Record<string, unknown> | undefined;
 
   const wishListsCount =
-    typeof data.wish_lists_count === "number" ? data.wish_lists_count : undefined;
+    typeof data.wish_lists_count === 'number' ? data.wish_lists_count : undefined;
 
   return {
     id,
-    name: (data.name as string) || "",
+    name: (data.name as string) || '',
     description: (data.description as string) || null,
     price: parsePrice(data.price),
     category_name: (category?.name as string) || null,
     shop_name: (shop?.name as string) || null,
-    url:
-      (data.url as string) || `https://booth.pm/ja/items/${id}`,
+    url: (data.url as string) || `https://booth.pm/ja/items/${id}`,
     images,
     tags,
     wish_lists_count: wishListsCount,
@@ -202,15 +194,10 @@ export async function enrichWithWishCount(
     await Promise.allSettled(
       batch.map(async ({ item, idx }) => {
         try {
-          const resp = await enrichFetch(
-            `https://booth.pm/ja/items/${item.id}.json`,
-          );
+          const resp = await enrichFetch(`https://booth.pm/ja/items/${item.id}.json`);
           if (resp.ok) {
             const data = await resp.json();
-            const count =
-              typeof data.wish_lists_count === "number"
-                ? data.wish_lists_count
-                : 0;
+            const count = typeof data.wish_lists_count === 'number' ? data.wish_lists_count : 0;
             result[idx] = { ...result[idx], wish_lists_count: count };
           }
         } catch {
@@ -227,17 +214,17 @@ export async function enrichWithWishCount(
 // ── Cache / History (unchanged — Rust invoke) ────────
 
 export async function cacheItems(items: BoothItem[]): Promise<void> {
-  return invoke("cache_items", { items });
+  return invoke('cache_items', { items });
 }
 
 export async function saveSearchHistory(keyword: string): Promise<void> {
-  return invoke("save_search_history", { keyword });
+  return invoke('save_search_history', { keyword });
 }
 
 // ── Favorites (unchanged — Rust invoke) ──────────────
 
 export async function getFavorites(): Promise<FavoriteItem[]> {
-  return invoke<FavoriteItem[]>("get_favorites");
+  return invoke<FavoriteItem[]>('get_favorites');
 }
 
 export async function addFavorite(params: {
@@ -248,11 +235,11 @@ export async function addFavorite(params: {
   category_name: string | null;
   shop_name: string | null;
 }): Promise<void> {
-  return invoke("add_favorite", { params });
+  return invoke('add_favorite', { params });
 }
 
 export async function removeFavorite(itemId: number): Promise<void> {
-  return invoke("remove_favorite", { itemId });
+  return invoke('remove_favorite', { itemId });
 }
 
 // ── Popular Avatars (unchanged — Rust invoke) ────────
@@ -268,11 +255,11 @@ export interface PopularAvatar {
 }
 
 export async function getPopularAvatars(): Promise<PopularAvatar[]> {
-  return invoke<PopularAvatar[]>("get_popular_avatars");
+  return invoke<PopularAvatar[]>('get_popular_avatars');
 }
 
 export async function checkAvatarsNeedUpdate(): Promise<boolean> {
-  return invoke<boolean>("check_avatars_need_update");
+  return invoke<boolean>('check_avatars_need_update');
 }
 
 export async function updatePopularAvatar(
@@ -280,69 +267,72 @@ export async function updatePopularAvatar(
   itemCount: number,
   thumbnailUrl: string | null,
 ): Promise<void> {
-  return invoke("update_popular_avatar", { id, itemCount, thumbnailUrl });
+  return invoke('update_popular_avatar', { id, itemCount, thumbnailUrl });
 }
 
 // ── Collections ──────────────────────────────────────
 
 export async function getCollections(): Promise<Collection[]> {
-  return invoke<Collection[]>("get_collections");
+  return invoke<Collection[]>('get_collections');
 }
 
 export async function createCollection(name: string, color?: string): Promise<number> {
-  return invoke<number>("create_collection", { params: { name, color } });
+  return invoke<number>('create_collection', { params: { name, color } });
 }
 
 export async function renameCollection(id: number, name: string): Promise<void> {
-  return invoke("rename_collection", { id, name });
+  return invoke('rename_collection', { id, name });
 }
 
 export async function deleteCollection(id: number): Promise<void> {
-  return invoke("delete_collection", { id });
+  return invoke('delete_collection', { id });
 }
 
 export async function addToCollection(collectionId: number, itemId: number): Promise<void> {
-  return invoke("add_to_collection", { collectionId, itemId });
+  return invoke('add_to_collection', { collectionId, itemId });
 }
 
 export async function removeFromCollection(collectionId: number, itemId: number): Promise<void> {
-  return invoke("remove_from_collection", { collectionId, itemId });
+  return invoke('remove_from_collection', { collectionId, itemId });
 }
 
 export async function getCollectionItems(collectionId: number): Promise<FavoriteItem[]> {
-  return invoke<FavoriteItem[]>("get_collection_items", { collectionId });
+  return invoke<FavoriteItem[]>('get_collection_items', { collectionId });
 }
 
 // ── Item Tags ────────────────────────────────────────
 
 export async function setItemTags(itemId: number, tags: string[]): Promise<void> {
-  return invoke("set_item_tags", { itemId, tags });
+  return invoke('set_item_tags', { itemId, tags });
 }
 
 export async function getAllUserTags(): Promise<string[]> {
-  return invoke<string[]>("get_all_user_tags");
+  return invoke<string[]>('get_all_user_tags');
 }
 
 export async function getAllItemTagsBatch(): Promise<Record<number, string[]>> {
-  return invoke<Record<number, string[]>>("get_all_item_tags_batch");
+  return invoke<Record<number, string[]>>('get_all_item_tags_batch');
 }
 
 export async function getAllItemCollectionsBatch(): Promise<Record<number, number[]>> {
-  return invoke<Record<number, number[]>>("get_all_item_collections_batch");
+  return invoke<Record<number, number[]>>('get_all_item_collections_batch');
 }
 
 // ── Statistics ────────────────────────────────────────
 
 export async function getAllStatistics(): Promise<AllStatistics> {
-  return invoke<AllStatistics>("get_all_statistics");
+  return invoke<AllStatistics>('get_all_statistics');
 }
 
 // ── Translation Cache ────────────────────────────────
 
 export async function getCachedTranslation(sourceText: string): Promise<string | null> {
-  return invoke<string | null>("get_cached_translation", { sourceText });
+  return invoke<string | null>('get_cached_translation', { sourceText });
 }
 
-export async function saveCachedTranslation(sourceText: string, translatedText: string): Promise<void> {
-  return invoke("save_cached_translation", { sourceText, translatedText });
+export async function saveCachedTranslation(
+  sourceText: string,
+  translatedText: string,
+): Promise<void> {
+  return invoke('save_cached_translation', { sourceText, translatedText });
 }

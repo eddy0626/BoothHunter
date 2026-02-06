@@ -1,10 +1,10 @@
-import { useState, useEffect } from "react";
-import { Filter, X, Heart } from "lucide-react";
-import { clsx } from "clsx";
-import { useI18n, getSortLabel } from "../../lib/i18n";
-import type { SearchParams } from "../../lib/types";
+import { useState, useEffect } from 'react';
+import { Filter, X, Heart } from 'lucide-react';
+import { clsx } from 'clsx';
+import { useI18n, getSortLabel } from '../../lib/i18n';
+import type { SearchParams } from '../../lib/types';
 
-const SORT_VALUES = ["new", "popular", "price_asc", "price_desc"] as const;
+const SORT_VALUES = ['new', 'popular', 'price_asc', 'price_desc'] as const;
 
 interface Props {
   params: SearchParams;
@@ -15,21 +15,15 @@ interface Props {
 export default function FilterPanel({ params, onFilterChange, isEnriching }: Props) {
   const { t, language } = useI18n();
   const [isOpen, setIsOpen] = useState(false);
-  const [priceMin, setPriceMin] = useState(
-    params.price_min?.toString() ?? "",
-  );
-  const [priceMax, setPriceMax] = useState(
-    params.price_max?.toString() ?? "",
-  );
-  const [wishMin, setWishMin] = useState(
-    params.min_wish_count?.toString() ?? "",
-  );
+  const [priceMin, setPriceMin] = useState(params.price_min?.toString() ?? '');
+  const [priceMax, setPriceMax] = useState(params.price_max?.toString() ?? '');
+  const [wishMin, setWishMin] = useState(params.min_wish_count?.toString() ?? '');
 
   // Sync local state when params change (e.g. URL back/forward navigation)
   useEffect(() => {
-    setPriceMin(params.price_min?.toString() ?? "");
-    setPriceMax(params.price_max?.toString() ?? "");
-    setWishMin(params.min_wish_count?.toString() ?? "");
+    setPriceMin(params.price_min?.toString() ?? '');
+    setPriceMax(params.price_max?.toString() ?? '');
+    setWishMin(params.min_wish_count?.toString() ?? '');
   }, [params.price_min, params.price_max, params.min_wish_count]);
 
   const handleApplyPrice = () => {
@@ -54,9 +48,9 @@ export default function FilterPanel({ params, onFilterChange, isEnriching }: Pro
   };
 
   const handleReset = () => {
-    setPriceMin("");
-    setPriceMax("");
-    setWishMin("");
+    setPriceMin('');
+    setPriceMax('');
+    setWishMin('');
     onFilterChange({
       category: undefined,
       sort: undefined,
@@ -73,10 +67,10 @@ export default function FilterPanel({ params, onFilterChange, isEnriching }: Pro
         <button
           onClick={() => setIsOpen(!isOpen)}
           className={clsx(
-            "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm border transition-colors",
+            'flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm border transition-colors',
             isOpen
-              ? "bg-indigo-50 border-indigo-300 text-indigo-700"
-              : "bg-white border-gray-300 text-gray-600 hover:bg-gray-50",
+              ? 'bg-indigo-50 border-indigo-300 text-indigo-700'
+              : 'bg-white border-gray-300 text-gray-600 hover:bg-gray-50',
           )}
         >
           <Filter className="w-3.5 h-3.5" />
@@ -85,10 +79,8 @@ export default function FilterPanel({ params, onFilterChange, isEnriching }: Pro
 
         {/* Sort dropdown inline */}
         <select
-          value={params.sort ?? ""}
-          onChange={(e) =>
-            onFilterChange({ sort: e.target.value || undefined })
-          }
+          value={params.sort ?? ''}
+          onChange={(e) => onFilterChange({ sort: e.target.value || undefined })}
           className="px-3 py-1.5 rounded-lg text-sm border border-gray-300 bg-white text-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500"
         >
           <option value="">{t.filter.sort}</option>
@@ -130,13 +122,11 @@ export default function FilterPanel({ params, onFilterChange, isEnriching }: Pro
         <div className="mt-3 p-4 bg-white rounded-lg border border-gray-200 space-y-4">
           {/* Price range */}
           <div>
-            <h4 className="text-sm font-medium text-gray-700 mb-2">
-              {t.filter.priceRange}
-            </h4>
+            <h4 className="text-sm font-medium text-gray-700 mb-2">{t.filter.priceRange}</h4>
             <div className="flex items-center gap-2">
               <input
                 type="number"
-                placeholder={language === "ko" ? "¥ 최소" : "¥ Min"}
+                placeholder={language === 'ko' ? '¥ 최소' : '¥ Min'}
                 value={priceMin}
                 onChange={(e) => setPriceMin(e.target.value)}
                 className="w-24 px-2 py-1 border border-gray-300 rounded text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500"
@@ -144,7 +134,7 @@ export default function FilterPanel({ params, onFilterChange, isEnriching }: Pro
               <span className="text-gray-400">~</span>
               <input
                 type="number"
-                placeholder={language === "ko" ? "¥ 최대" : "¥ Max"}
+                placeholder={language === 'ko' ? '¥ 최대' : '¥ Max'}
                 value={priceMax}
                 onChange={(e) => setPriceMax(e.target.value)}
                 className="w-24 px-2 py-1 border border-gray-300 rounded text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500"
@@ -164,9 +154,7 @@ export default function FilterPanel({ params, onFilterChange, isEnriching }: Pro
               <Heart className="w-3.5 h-3.5 text-pink-500" />
               {t.filter.minWishCount}
               {isEnriching && (
-                <span className="text-xs text-gray-400 font-normal ml-1">
-                  ({t.common.loading})
-                </span>
+                <span className="text-xs text-gray-400 font-normal ml-1">({t.common.loading})</span>
               )}
             </h4>
             <div className="flex items-center gap-2">
@@ -179,7 +167,7 @@ export default function FilterPanel({ params, onFilterChange, isEnriching }: Pro
                 className="w-24 px-2 py-1 border border-gray-300 rounded text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500"
               />
               <span className="text-xs text-gray-500">
-                {language === "ko" ? "개 이상" : "or more"}
+                {language === 'ko' ? '개 이상' : 'or more'}
               </span>
               <button
                 onClick={handleApplyWish}

@@ -1,11 +1,11 @@
-import { useEffect, useRef } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useEffect, useRef } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import {
   getPopularAvatars,
   needsUpdate,
   updateAvatarData,
   type PopularAvatar,
-} from "../lib/popular-avatars";
+} from '../lib/popular-avatars';
 
 // Module-level lock to prevent concurrent background updates across hook instances.
 // The flag is always reset in a finally block, so it cannot get stuck.
@@ -13,7 +13,7 @@ let updateInProgress = false;
 
 export function usePopularAvatars() {
   const query = useQuery<PopularAvatar[]>({
-    queryKey: ["popular-avatars"],
+    queryKey: ['popular-avatars'],
     queryFn: getPopularAvatars,
     staleTime: 60 * 60 * 1000, // 1 hour
   });
@@ -40,7 +40,7 @@ export function usePopularAvatars() {
         }
       } catch (e) {
         updateInProgress = false;
-        console.error("Background avatar update failed:", e);
+        console.error('Background avatar update failed:', e);
       }
     })();
     return () => {
