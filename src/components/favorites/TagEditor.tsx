@@ -1,5 +1,6 @@
 import { useState, useRef } from 'react';
 import { X } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
 import { useI18n } from '../../lib/i18n';
 
 interface Props {
@@ -53,15 +54,16 @@ export default function TagEditor({ itemId, tags, allUserTags, onSetTags }: Prop
     <div className="relative">
       <div className="flex flex-wrap gap-1 items-center">
         {tags.map((tag) => (
-          <span
+          <Badge
             key={tag}
-            className="inline-flex items-center gap-0.5 px-1.5 py-0.5 text-xs bg-indigo-100 text-indigo-700 rounded"
+            variant="secondary"
+            className="gap-0.5 px-1.5 py-0.5 text-xs bg-indigo-100 text-indigo-700"
           >
             {tag}
             <button onClick={() => removeTag(tag)} className="hover:text-indigo-900">
               <X className="w-2.5 h-2.5" />
             </button>
-          </span>
+          </Badge>
         ))}
         <div className="relative">
           <input

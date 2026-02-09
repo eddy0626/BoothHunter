@@ -1,6 +1,8 @@
 import { Heart, FolderOpen, Tag, Search } from 'lucide-react';
 import { useStatistics } from '../hooks/useStatistics';
 import { useI18n } from '../lib/i18n';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
 
 // ── Reusable bar component ────────────────────────────
 
@@ -46,16 +48,18 @@ function StatCard({
   color: string;
 }) {
   return (
-    <div className="bg-white rounded-xl border border-gray-200 p-5 flex items-start gap-4">
-      <div className={`p-2.5 rounded-lg ${color}`}>
-        <Icon className="w-5 h-5 text-white" />
-      </div>
-      <div>
-        <p className="text-sm text-gray-500">{label}</p>
-        <p className="text-2xl font-bold text-gray-900">{value}</p>
-        {sub && <p className="text-xs text-gray-400 mt-0.5">{sub}</p>}
-      </div>
-    </div>
+    <Card>
+      <CardContent className="flex items-start gap-4 p-5">
+        <div className={`p-2.5 rounded-lg ${color}`}>
+          <Icon className="w-5 h-5 text-white" />
+        </div>
+        <div>
+          <p className="text-sm text-gray-500">{label}</p>
+          <p className="text-2xl font-bold text-gray-900">{value}</p>
+          {sub && <p className="text-xs text-gray-400 mt-0.5">{sub}</p>}
+        </div>
+      </CardContent>
+    </Card>
   );
 }
 
@@ -63,10 +67,12 @@ function StatCard({
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div className="bg-white rounded-xl border border-gray-200 p-5">
-      <h3 className="text-sm font-semibold text-gray-700 mb-4">{title}</h3>
-      {children}
-    </div>
+    <Card>
+      <CardHeader className="pb-2">
+        <CardTitle className="text-sm font-semibold text-gray-700">{title}</CardTitle>
+      </CardHeader>
+      <CardContent>{children}</CardContent>
+    </Card>
   );
 }
 
@@ -79,8 +85,19 @@ export default function StatsPage() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center py-20">
-        <div className="w-8 h-8 border-3 border-indigo-600 border-t-transparent rounded-full animate-spin" />
+      <div className="p-6">
+        <div className="max-w-6xl mx-auto space-y-6">
+          <Skeleton className="h-8 w-48" />
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <Skeleton key={i} className="h-24 rounded-xl" />
+            ))}
+          </div>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <Skeleton className="h-64 rounded-xl" />
+            <Skeleton className="h-64 rounded-xl" />
+          </div>
+        </div>
       </div>
     );
   }

@@ -12,6 +12,8 @@ import { setItemTags } from '../../lib/booth-api';
 import { useQueryClient } from '@tanstack/react-query';
 import { useI18n } from '../../lib/i18n';
 import type { FavoriteItem } from '../../lib/types';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
 import TagEditor from './TagEditor';
 import AddToCollectionMenu from './AddToCollectionMenu';
 
@@ -40,8 +42,16 @@ export default memo(function FavoritesList({ items }: Props) {
 
   if (isLoading && !items) {
     return (
-      <div className="flex items-center justify-center py-20">
-        <div className="w-8 h-8 border-3 border-indigo-600 border-t-transparent rounded-full animate-spin" />
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+        {Array.from({ length: 8 }).map((_, i) => (
+          <div key={i} className="rounded-lg border border-gray-200 overflow-hidden">
+            <Skeleton className="aspect-square w-full" />
+            <div className="p-3 space-y-2">
+              <Skeleton className="h-4 w-3/4" />
+              <Skeleton className="h-4 w-1/2" />
+            </div>
+          </div>
+        ))}
       </div>
     );
   }
@@ -80,13 +90,17 @@ export default memo(function FavoritesList({ items }: Props) {
           </Link>
           <div className="p-3">
             <div className="flex items-start justify-between gap-1">
-              <Link
-                to={`/item/${fav.item_id}`}
-                className="text-sm font-medium text-gray-900 line-clamp-2 hover:text-indigo-600 flex-1"
-                title={fav.name}
-              >
-                {fav.name}
-              </Link>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Link
+                    to={`/item/${fav.item_id}`}
+                    className="text-sm font-medium text-gray-900 line-clamp-2 hover:text-indigo-600 flex-1"
+                  >
+                    {fav.name}
+                  </Link>
+                </TooltipTrigger>
+                <TooltipContent>{fav.name}</TooltipContent>
+              </Tooltip>
               <div className="flex items-center shrink-0">
                 <AddToCollectionMenu
                   itemId={fav.item_id}
@@ -95,15 +109,19 @@ export default memo(function FavoritesList({ items }: Props) {
                   onAddToCollection={addItem}
                   onRemoveFromCollection={removeItem}
                 />
-                <button
-                  onClick={() =>
-                    removeFavorite(fav.item_id).catch((e) => console.error('Remove failed:', e))
-                  }
-                  className="p-1 text-gray-300 hover:text-red-500 transition-colors"
-                  title={t.favorites.removed}
-                >
-                  <Trash2 className="w-4 h-4" />
-                </button>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button
+                      onClick={() =>
+                        removeFavorite(fav.item_id).catch((e) => console.error('Remove failed:', e))
+                      }
+                      className="p-1 text-gray-300 hover:text-red-500 transition-colors"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent>{t.favorites.removed}</TooltipContent>
+                </Tooltip>
               </div>
             </div>
             <div className="mt-2 flex items-center justify-between">

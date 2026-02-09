@@ -10,11 +10,15 @@ import {
   Languages,
   Loader2,
 } from 'lucide-react';
+import { toast } from 'sonner';
 import { getBoothItem } from '../lib/booth-api';
 import { useI18n } from '../lib/i18n';
 import { useFavorites } from '../hooks/useFavorites';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
+import { Skeleton } from '@/components/ui/skeleton';
 import FavoriteButton from '../components/favorites/FavoriteButton';
-import { useToast } from '../lib/ToastContext';
 import { useTranslation } from '../hooks/useTranslation';
 import { open } from '@tauri-apps/plugin-shell';
 
@@ -24,7 +28,6 @@ export default function ItemDetailPage() {
   const [currentImage, setCurrentImage] = useState(0);
   const { isFavorite, addFavorite, removeFavorite } = useFavorites();
   const { t, language } = useI18n();
-  const { showToast } = useToast();
   const {
     translatedText,
     isTranslating,
@@ -93,15 +96,27 @@ export default function ItemDetailPage() {
   const handleCopyLink = () => {
     if (!item) return;
     navigator.clipboard.writeText(item.url).then(
-      () => showToast(t.common.linkCopied),
+      () => toast.success(t.common.linkCopied),
       () => console.error('Clipboard write failed'),
     );
   };
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center h-full">
-        <div className="w-8 h-8 border-3 border-indigo-600 border-t-transparent rounded-full animate-spin" />
+      <div className="p-6">
+        <div className="max-w-5xl mx-auto">
+          <Skeleton className="h-5 w-24 mb-4" />
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <Skeleton className="aspect-square w-full rounded-lg" />
+            <div className="space-y-4">
+              <Skeleton className="h-7 w-3/4" />
+              <Skeleton className="h-9 w-32" />
+              <Skeleton className="h-5 w-1/2" />
+              <Skeleton className="h-5 w-1/3" />
+              <Skeleton className="h-10 w-48" />
+            </div>
+          </div>
+        </div>
       </div>
     );
   }
@@ -200,24 +215,32 @@ export default function ItemDetailPage() {
                   <p className="text-xs text-red-400 mt-1">{t.translation.error}</p>
                 )}
               </div>
-              <button
-                onClick={() => translate(item.name)}
-                className="p-1.5 text-gray-400 hover:text-indigo-600 transition-colors shrink-0"
-                title={t.translation.button}
-              >
-                {isTranslating ? (
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                ) : (
-                  <Languages className="w-4 h-4" />
-                )}
-              </button>
-              <button
-                onClick={handleCopyLink}
-                className="p-1.5 text-gray-400 hover:text-indigo-600 transition-colors shrink-0"
-                title={t.common.copyLink}
-              >
-                <Link2 className="w-4 h-4" />
-              </button>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button
+                    onClick={() => translate(item.name)}
+                    className="p-1.5 text-gray-400 hover:text-indigo-600 transition-colors shrink-0"
+                  >
+                    {isTranslating ? (
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                    ) : (
+                      <Languages className="w-4 h-4" />
+                    )}
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent>{t.translation.button}</TooltipContent>
+              </Tooltip>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button
+                    onClick={handleCopyLink}
+                    className="p-1.5 text-gray-400 hover:text-indigo-600 transition-colors shrink-0"
+                  >
+                    <Link2 className="w-4 h-4" />
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent>{t.common.copyLink}</TooltipContent>
+              </Tooltip>
               <FavoriteButton
                 item={item}
                 favorited={isFavorite(item.id)}
@@ -251,24 +274,18 @@ export default function ItemDetailPage() {
                 <span className="text-sm text-gray-500 block mb-2">{t.item.tags}:</span>
                 <div className="flex flex-wrap gap-1.5">
                   {item.tags.map((tag) => (
-                    <span
-                      key={tag}
-                      className="px-2 py-0.5 text-xs bg-gray-100 text-gray-600 rounded"
-                    >
+                    <Badge key={tag} variant="secondary" className="bg-gray-100 text-gray-600">
                       {tag}
-                    </span>
+                    </Badge>
                   ))}
                 </div>
               </div>
             )}
 
-            <button
-              onClick={handleOpenInBooth}
-              className="mt-6 flex items-center gap-2 px-6 py-2.5 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors"
-            >
+            <Button onClick={handleOpenInBooth} className="mt-6">
               <ExternalLink className="w-4 h-4" />
               {t.item.openInBooth}
-            </button>
+            </Button>
 
             {item.description && (
               <div className="mt-6">

@@ -1,5 +1,6 @@
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { clsx } from 'clsx';
+import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
 import { useI18n } from '../../lib/i18n';
 
 interface Props {
@@ -19,15 +20,16 @@ export default function Pagination({ currentPage, totalPages, onPageChange }: Pr
 
   return (
     <nav role="navigation" aria-label={navLabel} className="flex items-center justify-center gap-1">
-      <button
+      <Button
+        variant="ghost"
+        size="sm"
         onClick={() => onPageChange(currentPage - 1)}
         disabled={currentPage <= 1}
         aria-label={prevLabel}
-        className="flex items-center gap-1 px-3 py-1.5 text-sm text-gray-600 hover:bg-gray-100 rounded-lg disabled:opacity-40 disabled:cursor-not-allowed"
       >
         <ChevronLeft className="w-4 h-4" />
         {t.common.prev}
-      </button>
+      </Button>
 
       {pages.map((page, idx) =>
         page === -1 ? (
@@ -35,30 +37,30 @@ export default function Pagination({ currentPage, totalPages, onPageChange }: Pr
             ...
           </span>
         ) : (
-          <button
+          <Button
             key={page}
+            variant={page === currentPage ? 'default' : 'ghost'}
+            size="icon"
             onClick={() => onPageChange(page)}
             aria-label={pageLabel(page)}
             aria-current={page === currentPage ? 'page' : undefined}
-            className={clsx(
-              'w-8 h-8 rounded-lg text-sm font-medium transition-colors',
-              page === currentPage ? 'bg-indigo-600 text-white' : 'text-gray-600 hover:bg-gray-100',
-            )}
+            className={cn('w-8 h-8', page !== currentPage && 'text-gray-600')}
           >
             {page}
-          </button>
+          </Button>
         ),
       )}
 
-      <button
+      <Button
+        variant="ghost"
+        size="sm"
         onClick={() => onPageChange(currentPage + 1)}
         disabled={currentPage >= totalPages}
         aria-label={nextLabel}
-        className="flex items-center gap-1 px-3 py-1.5 text-sm text-gray-600 hover:bg-gray-100 rounded-lg disabled:opacity-40 disabled:cursor-not-allowed"
       >
         {t.common.next}
         <ChevronRight className="w-4 h-4" />
-      </button>
+      </Button>
     </nav>
   );
 }

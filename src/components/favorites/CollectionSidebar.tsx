@@ -1,6 +1,19 @@
 import { useState } from 'react';
 import { FolderPlus, Trash2, Pencil, Check, X } from 'lucide-react';
-import { clsx } from 'clsx';
+import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import {
+  AlertDialog,
+  AlertDialogTrigger,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogCancel,
+  AlertDialogAction,
+} from '@/components/ui/alert-dialog';
 import { useCollections } from '../../hooks/useCollections';
 import { useI18n } from '../../lib/i18n';
 
@@ -62,12 +75,20 @@ export default function CollectionSidebar({ selected, onSelect, totalCount }: Pr
     }
   };
 
+  const deleteConfirmTitle = language === 'ko' ? '컬렉션 삭제' : 'Delete Collection';
+  const deleteConfirmDesc =
+    language === 'ko'
+      ? '이 컬렉션을 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.'
+      : 'Are you sure you want to delete this collection? This action cannot be undone.';
+  const deleteLabel = language === 'ko' ? '삭제' : 'Delete';
+  const cancelLabel = language === 'ko' ? '취소' : 'Cancel';
+
   return (
     <div className="w-48 shrink-0">
       {/* All items */}
       <button
         onClick={() => onSelect(null)}
-        className={clsx(
+        className={cn(
           'w-full text-left px-3 py-2 rounded-lg text-sm transition-colors',
           selected === null
             ? 'bg-indigo-50 text-indigo-700 font-medium'
@@ -83,7 +104,7 @@ export default function CollectionSidebar({ selected, onSelect, totalCount }: Pr
           <div key={col.id} className="group flex items-center">
             {editingId === col.id ? (
               <div className="flex items-center gap-1 w-full px-1">
-                <input
+                <Input
                   autoFocus
                   value={editName}
                   onChange={(e) => setEditName(e.target.value)}
@@ -92,7 +113,7 @@ export default function CollectionSidebar({ selected, onSelect, totalCount }: Pr
                     if (e.key === 'Enter') handleRename(col.id);
                     if (e.key === 'Escape') setEditingId(null);
                   }}
-                  className="flex-1 px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                  className="flex-1 h-7 text-sm"
                 />
                 <button onClick={() => handleRename(col.id)} className="p-0.5 text-green-600">
                   <Check className="w-3.5 h-3.5" />
@@ -105,7 +126,7 @@ export default function CollectionSidebar({ selected, onSelect, totalCount }: Pr
               <>
                 <button
                   onClick={() => onSelect(col.id)}
-                  className={clsx(
+                  className={cn(
                     'flex-1 text-left px-3 py-2 rounded-lg text-sm truncate transition-colors flex items-center gap-2',
                     selected === col.id
                       ? 'bg-indigo-50 text-indigo-700 font-medium'
@@ -129,12 +150,28 @@ export default function CollectionSidebar({ selected, onSelect, totalCount }: Pr
                   >
                     <Pencil className="w-3 h-3" />
                   </button>
-                  <button
-                    onClick={() => handleDelete(col.id)}
-                    className="p-1 text-gray-400 hover:text-red-500"
-                  >
-                    <Trash2 className="w-3 h-3" />
-                  </button>
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <button className="p-1 text-gray-400 hover:text-red-500">
+                        <Trash2 className="w-3 h-3" />
+                      </button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>{deleteConfirmTitle}</AlertDialogTitle>
+                        <AlertDialogDescription>{deleteConfirmDesc}</AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>{cancelLabel}</AlertDialogCancel>
+                        <AlertDialogAction
+                          onClick={() => handleDelete(col.id)}
+                          className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                        >
+                          {deleteLabel}
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
                 </div>
               </>
             )}
@@ -145,7 +182,7 @@ export default function CollectionSidebar({ selected, onSelect, totalCount }: Pr
       {/* Create new */}
       {isCreating ? (
         <div className="mt-3 space-y-2">
-          <input
+          <Input
             autoFocus
             value={newName}
             onChange={(e) => setNewName(e.target.value)}
@@ -155,14 +192,14 @@ export default function CollectionSidebar({ selected, onSelect, totalCount }: Pr
             }}
             placeholder={t.collections.namePlaceholder}
             maxLength={200}
-            className="w-full px-2 py-1.5 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-indigo-500"
+            className="h-8 text-sm"
           />
           <div className="flex gap-1">
             {COLORS.map((c) => (
               <button
                 key={c}
                 onClick={() => setNewColor(c)}
-                className={clsx(
+                className={cn(
                   'w-5 h-5 rounded-full border-2',
                   newColor === c ? 'border-gray-800' : 'border-transparent',
                 )}
@@ -171,18 +208,12 @@ export default function CollectionSidebar({ selected, onSelect, totalCount }: Pr
             ))}
           </div>
           <div className="flex gap-1">
-            <button
-              onClick={handleCreate}
-              className="px-3 py-1 bg-indigo-600 text-white rounded text-xs hover:bg-indigo-700"
-            >
+            <Button size="sm" onClick={handleCreate}>
               {language === 'ko' ? '생성' : 'Create'}
-            </button>
-            <button
-              onClick={() => setIsCreating(false)}
-              className="px-3 py-1 text-gray-600 rounded text-xs hover:bg-gray-100"
-            >
+            </Button>
+            <Button variant="ghost" size="sm" onClick={() => setIsCreating(false)}>
               {language === 'ko' ? '취소' : 'Cancel'}
-            </button>
+            </Button>
           </div>
         </div>
       ) : (

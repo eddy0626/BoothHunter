@@ -1,5 +1,28 @@
 @import 'tailwindcss';
 
+@theme inline {
+  --color-background: oklch(1 0 0);
+  --color-foreground: oklch(0.145 0.004 285.82);
+  --color-card: oklch(1 0 0);
+  --color-card-foreground: oklch(0.145 0.004 285.82);
+  --color-popover: oklch(1 0 0);
+  --color-popover-foreground: oklch(0.145 0.004 285.82);
+  --color-primary: oklch(0.511 0.262 276.97);
+  --color-primary-foreground: oklch(0.985 0.002 247.86);
+  --color-secondary: oklch(0.967 0.003 264.54);
+  --color-secondary-foreground: oklch(0.21 0.006 285.88);
+  --color-muted: oklch(0.967 0.003 264.54);
+  --color-muted-foreground: oklch(0.556 0.007 285.88);
+  --color-accent: oklch(0.967 0.003 264.54);
+  --color-accent-foreground: oklch(0.21 0.006 285.88);
+  --color-destructive: oklch(0.577 0.245 27.33);
+  --color-destructive-foreground: oklch(0.985 0.002 247.86);
+  --color-border: oklch(0.922 0.004 264.54);
+  --color-input: oklch(0.922 0.004 264.54);
+  --color-ring: oklch(0.511 0.262 276.97);
+  --radius: 0.625rem;
+}
+
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -31,19 +54,4 @@ body {
 .scrollbar-thin::-webkit-scrollbar-thumb {
   background-color: #d1d5db;
   border-radius: 2px;
-}
-
-@keyframes slide-in {
-  from {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.animate-slide-in {
-  animation: slide-in 0.2s ease-out;
 }

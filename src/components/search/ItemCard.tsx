@@ -1,10 +1,12 @@
 import { memo } from 'react';
 import { Link } from 'react-router-dom';
 import { Heart, Link2, Languages, Loader2 } from 'lucide-react';
+import { toast } from 'sonner';
 import type { BoothItem } from '../../lib/types';
 import { useI18n } from '../../lib/i18n';
+import { Badge } from '@/components/ui/badge';
+import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
 import FavoriteButton from '../favorites/FavoriteButton';
-import { useToast } from '../../lib/ToastContext';
 import { useTranslation } from '../../hooks/useTranslation';
 
 interface Props {
@@ -18,7 +20,6 @@ export default memo(function ItemCard({ item, favorited, onAddFavorite, onRemove
   const { t } = useI18n();
   const thumbnail = item.images[0] || '';
   const priceText = item.price === 0 ? t.item.free : `¥${item.price.toLocaleString()}`;
-  const { showToast } = useToast();
   const { translatedText, isTranslating, isTranslationVisible, translationError, translate } =
     useTranslation();
 
@@ -26,7 +27,7 @@ export default memo(function ItemCard({ item, favorited, onAddFavorite, onRemove
     e.preventDefault();
     e.stopPropagation();
     navigator.clipboard.writeText(item.url).then(
-      () => showToast(t.common.linkCopied),
+      () => toast.success(t.common.linkCopied),
       () => console.error('Clipboard write failed'),
     );
   };
@@ -47,26 +48,34 @@ export default memo(function ItemCard({ item, favorited, onAddFavorite, onRemove
               No Image
             </div>
           )}
-          <button
-            onClick={handleCopyLink}
-            className="absolute top-2 right-2 p-1.5 bg-black/50 text-white rounded-md opacity-0 group-hover:opacity-100 transition-opacity hover:bg-black/70"
-            title={t.common.copyLink}
-          >
-            <Link2 className="w-3.5 h-3.5" />
-          </button>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button
+                onClick={handleCopyLink}
+                className="absolute top-2 right-2 p-1.5 bg-black/50 text-white rounded-md opacity-0 group-hover:opacity-100 transition-opacity hover:bg-black/70"
+              >
+                <Link2 className="w-3.5 h-3.5" />
+              </button>
+            </TooltipTrigger>
+            <TooltipContent>{t.common.copyLink}</TooltipContent>
+          </Tooltip>
         </div>
       </Link>
       <div className="p-3">
         <div className="flex items-start justify-between gap-1">
           <div className="flex-1 min-w-0">
             <div className="flex items-start gap-1">
-              <Link
-                to={`/item/${item.id}`}
-                className="text-sm font-medium text-gray-900 line-clamp-2 hover:text-indigo-600 flex-1"
-                title={item.name}
-              >
-                {item.name}
-              </Link>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Link
+                    to={`/item/${item.id}`}
+                    className="text-sm font-medium text-gray-900 line-clamp-2 hover:text-indigo-600 flex-1"
+                  >
+                    {item.name}
+                  </Link>
+                </TooltipTrigger>
+                <TooltipContent>{item.name}</TooltipContent>
+              </Tooltip>
               <button
                 onClick={() => translate(item.name)}
                 className="p-0.5 text-gray-400 hover:text-indigo-600 transition-colors shrink-0"
@@ -105,9 +114,9 @@ export default memo(function ItemCard({ item, favorited, onAddFavorite, onRemove
         </div>
         <div className="mt-1.5 flex items-center gap-1.5 flex-wrap">
           {item.category_name && (
-            <span className="text-xs text-gray-500 bg-gray-100 px-2 py-0.5 rounded">
+            <Badge variant="secondary" className="text-xs text-gray-500 bg-gray-100">
               {item.category_name}
-            </span>
+            </Badge>
           )}
           {item.wish_lists_count != null && (
             <span className="flex items-center gap-0.5 text-xs text-pink-500">

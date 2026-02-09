@@ -2,12 +2,12 @@ import { useEffect, useState } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { listen } from '@tauri-apps/api/event';
+import { Toaster } from 'sonner';
+import { TooltipProvider } from '@/components/ui/tooltip';
 import { SearchProvider } from './lib/SearchContext';
 import { I18nProvider } from './lib/i18n';
-import { ToastProvider } from './lib/ToastContext';
 import ErrorBoundary from './components/common/ErrorBoundary';
 import UpdateToast from './components/common/UpdateToast';
-import ToastContainer from './components/common/Toast';
 import AppLayout from './components/layout/AppLayout';
 import SearchPage from './pages/SearchPage';
 import FavoritesPage from './pages/FavoritesPage';
@@ -47,7 +47,7 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <I18nProvider>
         <ErrorBoundary>
-          <ToastProvider>
+          <TooltipProvider delayDuration={300}>
             <BrowserRouter>
               <SearchProvider>
                 <AppLayout>
@@ -58,10 +58,10 @@ function App() {
                     <Route path="/item/:id" element={<ItemDetailPage />} />
                   </Routes>
                 </AppLayout>
-                <ToastContainer />
               </SearchProvider>
             </BrowserRouter>
-          </ToastProvider>
+            <Toaster richColors position="bottom-right" />
+          </TooltipProvider>
         </ErrorBoundary>
         {updateInfo && <UpdateToast update={updateInfo} onDismiss={() => setUpdateInfo(null)} />}
       </I18nProvider>

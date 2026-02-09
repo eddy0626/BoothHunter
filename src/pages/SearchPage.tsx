@@ -8,6 +8,7 @@ import Pagination from '../components/common/Pagination';
 import { ITEMS_PER_PAGE } from '../lib/constants';
 import { useI18n, getCategoryLabel } from '../lib/i18n';
 import { Search, X } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
 import type { SearchParams } from '../lib/types';
 
 export default function SearchPage() {
@@ -60,12 +61,12 @@ export default function SearchPage() {
         {/* Active category badge */}
         {categoryLabel && (
           <div className="mt-2 flex items-center gap-2">
-            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-indigo-100 text-indigo-700">
+            <Badge className="gap-1 bg-indigo-100 text-indigo-700 border-transparent hover:bg-indigo-100">
               {categoryLabel}
               <button onClick={handleClearCategory} className="ml-0.5 hover:text-indigo-900">
                 <X className="w-3 h-3" />
               </button>
-            </span>
+            </Badge>
           </div>
         )}
 

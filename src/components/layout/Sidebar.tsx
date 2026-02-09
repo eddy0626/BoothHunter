@@ -17,7 +17,8 @@ import {
   Wrench,
   Sparkles,
 } from 'lucide-react';
-import { clsx } from 'clsx';
+import { cn } from '@/lib/utils';
+import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '@/components/ui/collapsible';
 import { VRCHAT_CATEGORIES } from '../../lib/constants';
 import { useSearchContext } from '../../lib/SearchContext';
 import { useI18n, getCategoryLabel } from '../../lib/i18n';
@@ -93,7 +94,7 @@ export default function Sidebar() {
             key={item.to}
             to={item.to}
             className={({ isActive }) =>
-              clsx(
+              cn(
                 'flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors',
                 isActive
                   ? 'bg-indigo-50 text-indigo-700'
@@ -107,17 +108,14 @@ export default function Sidebar() {
         ))}
 
         {/* VRChat Category Tree */}
-        <div className="mt-3">
-          <button
-            onClick={() => setIsCategoryOpen(!isCategoryOpen)}
-            className="flex items-center justify-between w-full px-3 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider hover:text-gray-700"
-          >
+        <Collapsible open={isCategoryOpen} onOpenChange={setIsCategoryOpen} className="mt-3">
+          <CollapsibleTrigger className="flex items-center justify-between w-full px-3 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider hover:text-gray-700">
             <span>{t.nav.vrchat}</span>
             <ChevronDown
-              className={clsx('w-3.5 h-3.5 transition-transform', !isCategoryOpen && '-rotate-90')}
+              className={cn('w-3.5 h-3.5 transition-transform', !isCategoryOpen && '-rotate-90')}
             />
-          </button>
-          {isCategoryOpen && (
+          </CollapsibleTrigger>
+          <CollapsibleContent>
             <div className="mt-1 space-y-0.5">
               {VRCHAT_CATEGORIES.map((cat) => {
                 const Icon = ICON_MAP[cat.icon];
@@ -125,7 +123,7 @@ export default function Sidebar() {
                   <button
                     key={cat.jaName}
                     onClick={() => handleCategoryClick(cat.jaName)}
-                    className={clsx(
+                    className={cn(
                       'flex items-center gap-2.5 w-full px-3 py-1.5 rounded-lg text-sm transition-colors text-left',
                       activeCategory === cat.jaName
                         ? 'bg-indigo-50 text-indigo-700 font-medium'
@@ -138,8 +136,8 @@ export default function Sidebar() {
                 );
               })}
             </div>
-          )}
-        </div>
+          </CollapsibleContent>
+        </Collapsible>
       </nav>
 
       {/* Language Selector */}

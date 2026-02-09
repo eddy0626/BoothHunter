@@ -1,6 +1,7 @@
 import type { BoothItem } from '../../lib/types';
 import { useI18n } from '../../lib/i18n';
 import { useFavorites } from '../../hooks/useFavorites';
+import { Skeleton } from '@/components/ui/skeleton';
 import ItemCard from './ItemCard';
 
 interface Props {
@@ -16,14 +17,19 @@ export default function SearchResults({ items, isLoading, error, totalCount }: P
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center py-20" role="status" aria-live="polite">
-        <div className="flex flex-col items-center gap-3">
-          <div
-            className="w-8 h-8 border-3 border-indigo-600 border-t-transparent rounded-full animate-spin"
-            aria-hidden="true"
-          />
-          <p className="text-sm text-gray-500">{t.search.searching}</p>
+      <div role="status" aria-live="polite">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+          {Array.from({ length: 10 }).map((_, i) => (
+            <div key={i} className="rounded-lg border border-gray-200 overflow-hidden">
+              <Skeleton className="aspect-square w-full" />
+              <div className="p-3 space-y-2">
+                <Skeleton className="h-4 w-3/4" />
+                <Skeleton className="h-4 w-1/2" />
+              </div>
+            </div>
+          ))}
         </div>
+        <p className="sr-only">{t.search.searching}</p>
       </div>
     );
   }

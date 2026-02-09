@@ -1,6 +1,9 @@
 import { useState, useRef, useEffect, useCallback, type FormEvent } from 'react';
 import { Search } from 'lucide-react';
-import { clsx } from 'clsx';
+import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Badge } from '@/components/ui/badge';
 import { useI18n } from '../../lib/i18n';
 import { getSuggestions, type SearchSuggestion } from '../../lib/search-suggestions';
 
@@ -105,7 +108,7 @@ export default function SearchBar({ onSearch, initialKeyword = '', isLoading }: 
     <form onSubmit={handleSubmit} className="flex gap-2">
       <div className="relative flex-1">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-        <input
+        <Input
           ref={inputRef}
           type="text"
           value={keyword}
@@ -113,10 +116,10 @@ export default function SearchBar({ onSearch, initialKeyword = '', isLoading }: 
           onKeyDown={handleKeyDown}
           onFocus={() => suggestions.length > 0 && setShowDropdown(true)}
           placeholder={t.search.placeholder}
-          className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white"
+          className="pl-10 h-10"
         />
 
-        {/* Suggestion Dropdown */}
+        {/* Suggestion Dropdown — custom, stays as-is */}
         {showDropdown && suggestions.length > 0 && (
           <div
             ref={dropdownRef}
@@ -127,7 +130,7 @@ export default function SearchBar({ onSearch, initialKeyword = '', isLoading }: 
                 key={`${s.converted}-${idx}`}
                 type="button"
                 onClick={() => handleSelectSuggestion(s)}
-                className={clsx(
+                className={cn(
                   'w-full flex items-center justify-between px-4 py-2.5 text-sm text-left transition-colors',
                   idx === selectedIdx
                     ? 'bg-indigo-50 text-indigo-700'
@@ -139,9 +142,10 @@ export default function SearchBar({ onSearch, initialKeyword = '', isLoading }: 
                   <span className="text-gray-300">&rarr;</span>
                   <span className="font-medium truncate">{s.converted}</span>
                 </div>
-                <span
-                  className={clsx(
-                    'shrink-0 ml-2 px-1.5 py-0.5 rounded text-[10px] font-medium',
+                <Badge
+                  variant="secondary"
+                  className={cn(
+                    'shrink-0 ml-2 text-[10px]',
                     s.category === 'avatar' && 'bg-purple-100 text-purple-700',
                     s.category === 'item' && 'bg-blue-100 text-blue-700',
                     s.category === 'vrc' && 'bg-green-100 text-green-700',
@@ -150,19 +154,15 @@ export default function SearchBar({ onSearch, initialKeyword = '', isLoading }: 
                   )}
                 >
                   {CATEGORY_LABELS[s.category]}
-                </span>
+                </Badge>
               </button>
             ))}
           </div>
         )}
       </div>
-      <button
-        type="submit"
-        disabled={isLoading || !keyword.trim()}
-        className="px-6 py-2.5 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-      >
+      <Button type="submit" disabled={isLoading || !keyword.trim()}>
         {t.search.button}
-      </button>
+      </Button>
     </form>
   );
 }

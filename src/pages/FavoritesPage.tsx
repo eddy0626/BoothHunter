@@ -5,6 +5,7 @@ import CollectionSidebar from '../components/favorites/CollectionSidebar';
 import { useFavorites } from '../hooks/useFavorites';
 import { useCollectionItems } from '../hooks/useCollections';
 import { useI18n } from '../lib/i18n';
+import { Input } from '@/components/ui/input';
 import type { FavoriteItem } from '../lib/types';
 
 export default function FavoritesPage() {
@@ -51,11 +52,11 @@ export default function FavoritesPage() {
             <div className="mb-4 flex items-center gap-3">
               <div className="relative flex-1 max-w-xs">
                 <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                <input
+                <Input
                   value={tagFilter}
                   onChange={(e) => setTagFilter(e.target.value)}
                   placeholder={searchPlaceholder}
-                  className="w-full pl-9 pr-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                  className="pl-9 h-9"
                 />
               </div>
               <span className="text-sm text-gray-500">{countText}</span>

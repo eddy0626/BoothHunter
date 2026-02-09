@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { invoke } from '@tauri-apps/api/core';
 import { Download, X } from 'lucide-react';
 import { useI18n } from '../../lib/i18n';
+import { Button } from '@/components/ui/button';
 
 interface UpdateInfo {
   version: string;
@@ -50,20 +51,12 @@ export default function UpdateToast({ update, onDismiss }: Props) {
           </div>
           {error && <p className="text-xs text-red-500 mt-1">{t.updater.error}</p>}
           <div className="flex items-center justify-end gap-2 mt-3">
-            <button
-              onClick={onDismiss}
-              disabled={installing}
-              className="px-3 py-1.5 text-sm text-gray-600 rounded-lg hover:bg-gray-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-            >
+            <Button variant="ghost" size="sm" onClick={onDismiss} disabled={installing}>
               {t.updater.dismiss}
-            </button>
-            <button
-              onClick={handleInstall}
-              disabled={installing}
-              className="px-3 py-1.5 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-            >
+            </Button>
+            <Button size="sm" onClick={handleInstall} disabled={installing}>
               {installing ? t.updater.downloading : t.updater.install}
-            </button>
+            </Button>
           </div>
         </div>
       </div>
