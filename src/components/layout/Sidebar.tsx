@@ -94,22 +94,24 @@ export default function Sidebar() {
       {/* Navigation */}
       <nav className="flex-1 p-2 overflow-y-auto" aria-label={t.a11y.mainNav}>
         {navItems.map((item) => (
-          <Tooltip key={item.to}>
+          <Tooltip key={item.to} delayDuration={300}>
             <TooltipTrigger asChild>
-              <NavLink
-                to={item.to}
-                className={({ isActive }) =>
-                  cn(
-                    'flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors',
-                    isActive
-                      ? 'bg-indigo-50 text-indigo-700'
-                      : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900',
-                  )
-                }
-              >
-                <item.icon className="w-4 h-4 shrink-0" />
-                <span className="hidden lg:inline">{item.label}</span>
-              </NavLink>
+              <div>
+                <NavLink
+                  to={item.to}
+                  className={({ isActive }) =>
+                    cn(
+                      'flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors',
+                      isActive
+                        ? 'bg-indigo-50 text-indigo-700'
+                        : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900',
+                    )
+                  }
+                >
+                  <item.icon className="w-4 h-4 shrink-0" />
+                  <span className="hidden lg:inline">{item.label}</span>
+                </NavLink>
+              </div>
             </TooltipTrigger>
             <TooltipContent side="right" className="lg:hidden">
               {item.label}
