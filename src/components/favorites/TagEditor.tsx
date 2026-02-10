@@ -1,5 +1,6 @@
 import { useState, useRef } from 'react';
 import { X } from 'lucide-react';
+import { toast } from 'sonner';
 import { Badge } from '@/components/ui/badge';
 import { useI18n } from '../../lib/i18n';
 
@@ -29,6 +30,7 @@ export default function TagEditor({ itemId, tags, allUserTags, onSetTags }: Prop
       setShowSuggestions(false);
     } catch (e) {
       console.error('Add tag failed:', e);
+      toast.error(t.errors.tagAdd);
     }
   };
 
@@ -40,6 +42,7 @@ export default function TagEditor({ itemId, tags, allUserTags, onSetTags }: Prop
       );
     } catch (e) {
       console.error('Remove tag failed:', e);
+      toast.error(t.errors.tagRemove);
     }
   };
 

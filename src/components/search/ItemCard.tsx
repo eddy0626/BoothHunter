@@ -28,7 +28,10 @@ export default memo(function ItemCard({ item, favorited, onAddFavorite, onRemove
     e.stopPropagation();
     navigator.clipboard.writeText(item.url).then(
       () => toast.success(t.common.linkCopied),
-      () => console.error('Clipboard write failed'),
+      () => {
+        console.error('Clipboard write failed');
+        toast.error(t.errors.clipboardWrite);
+      },
     );
   };
 

@@ -1,6 +1,7 @@
 import { memo, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { Heart, Trash2 } from 'lucide-react';
+import { toast } from 'sonner';
 import { useFavorites } from '../../hooks/useFavorites';
 import {
   useCollections,
@@ -14,6 +15,17 @@ import { useI18n } from '../../lib/i18n';
 import type { FavoriteItem } from '../../lib/types';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
+import {
+  AlertDialog,
+  AlertDialogTrigger,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogCancel,
+  AlertDialogAction,
+} from '@/components/ui/alert-dialog';
 import TagEditor from './TagEditor';
 import AddToCollectionMenu from './AddToCollectionMenu';
 
@@ -109,19 +121,40 @@ export default memo(function FavoritesList({ items }: Props) {
                   onAddToCollection={addItem}
                   onRemoveFromCollection={removeItem}
                 />
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <button
-                      onClick={() =>
-                        removeFavorite(fav.item_id).catch((e) => console.error('Remove failed:', e))
-                      }
-                      className="p-1 text-gray-300 hover:text-red-500 transition-colors"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
-                  </TooltipTrigger>
-                  <TooltipContent>{t.favorites.removed}</TooltipContent>
-                </Tooltip>
+                <AlertDialog>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <AlertDialogTrigger asChild>
+                        <button className="p-1 text-gray-300 hover:text-red-500 transition-colors">
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </AlertDialogTrigger>
+                    </TooltipTrigger>
+                    <TooltipContent>{t.favorites.removed}</TooltipContent>
+                  </Tooltip>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>{t.favorites.confirmDeleteTitle}</AlertDialogTitle>
+                      <AlertDialogDescription>{t.favorites.confirmDeleteDesc}</AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>{t.favorites.cancelButton}</AlertDialogCancel>
+                      <AlertDialogAction
+                        onClick={async () => {
+                          try {
+                            await removeFavorite(fav.item_id);
+                          } catch (e) {
+                            console.error('Remove failed:', e);
+                            toast.error(t.errors.favoriteRemove);
+                          }
+                        }}
+                        className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                      >
+                        {t.favorites.deleteButton}
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
               </div>
             </div>
             <div className="mt-2 flex items-center justify-between">

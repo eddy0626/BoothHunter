@@ -15,6 +15,10 @@ export interface Translations {
     empty: string;
     added: string;
     removed: string;
+    confirmDeleteTitle: string;
+    confirmDeleteDesc: string;
+    deleteButton: string;
+    cancelButton: string;
   };
   item: {
     free: string;
@@ -95,9 +99,25 @@ export interface Translations {
     removeFrom: string;
     namePlaceholder: string;
     addToCollection: string;
+    confirmDeleteTitle: string;
+    confirmDeleteDesc: string;
+    deleteButton: string;
+    cancelButton: string;
+    createButton: string;
   };
   tags: {
     addTag: string;
+  };
+  errors: {
+    collectionCreate: string;
+    collectionRename: string;
+    collectionDelete: string;
+    collectionToggle: string;
+    favoriteAdd: string;
+    favoriteRemove: string;
+    tagAdd: string;
+    tagRemove: string;
+    clipboardWrite: string;
   };
   errorBoundary: {
     unexpected: string;

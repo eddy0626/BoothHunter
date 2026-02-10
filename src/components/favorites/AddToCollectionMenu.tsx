@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import { FolderPlus, Check } from 'lucide-react';
+import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
 import {
   DropdownMenu,
@@ -39,6 +40,7 @@ export default function AddToCollectionMenu({
       }
     } catch (e) {
       console.error('Toggle collection failed:', e);
+      toast.error(t.errors.collectionToggle);
     }
   };
 

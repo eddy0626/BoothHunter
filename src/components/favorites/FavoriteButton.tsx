@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Heart, Loader2 } from 'lucide-react';
+import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
 import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
 import type { BoothItem } from '../../lib/types';
@@ -29,6 +30,7 @@ export default function FavoriteButton({ item, favorited, onAdd, onRemove }: Pro
       }
     } catch (err) {
       console.error('Favorite operation failed:', err);
+      toast.error(favorited ? t.errors.favoriteRemove : t.errors.favoriteAdd);
     } finally {
       setIsPending(false);
     }

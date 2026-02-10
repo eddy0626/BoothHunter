@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import { FolderPlus, Trash2, Pencil, Check, X } from 'lucide-react';
+import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Skeleton } from '@/components/ui/skeleton';
 import {
   AlertDialog,
   AlertDialogTrigger,
@@ -35,7 +37,7 @@ interface Props {
 }
 
 export default function CollectionSidebar({ selected, onSelect, totalCount }: Props) {
-  const { collections, create, rename, remove } = useCollections();
+  const { collections, isLoading, create, rename, remove } = useCollections();
   const { t, language } = useI18n();
   const [isCreating, setIsCreating] = useState(false);
   const [newName, setNewName] = useState('');
@@ -52,6 +54,7 @@ export default function CollectionSidebar({ selected, onSelect, totalCount }: Pr
       setIsCreating(false);
     } catch (e) {
       console.error('Create collection failed:', e);
+      toast.error(t.errors.collectionCreate);
     }
   };
 
@@ -63,6 +66,7 @@ export default function CollectionSidebar({ selected, onSelect, totalCount }: Pr
       setEditingId(null);
     } catch (e) {
       console.error('Rename collection failed:', e);
+      toast.error(t.errors.collectionRename);
     }
   };
 
@@ -72,16 +76,14 @@ export default function CollectionSidebar({ selected, onSelect, totalCount }: Pr
       if (selected === id) onSelect(null);
     } catch (e) {
       console.error('Delete collection failed:', e);
+      toast.error(t.errors.collectionDelete);
     }
   };
 
-  const deleteConfirmTitle = language === 'ko' ? '컬렉션 삭제' : 'Delete Collection';
-  const deleteConfirmDesc =
-    language === 'ko'
-      ? '이 컬렉션을 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.'
-      : 'Are you sure you want to delete this collection? This action cannot be undone.';
-  const deleteLabel = language === 'ko' ? '삭제' : 'Delete';
-  const cancelLabel = language === 'ko' ? '취소' : 'Cancel';
+  const deleteConfirmTitle = t.collections.confirmDeleteTitle;
+  const deleteConfirmDesc = t.collections.confirmDeleteDesc;
+  const deleteLabel = t.collections.deleteButton;
+  const cancelLabel = t.collections.cancelButton;
 
   return (
     <div className="w-48 shrink-0">
@@ -100,7 +102,16 @@ export default function CollectionSidebar({ selected, onSelect, totalCount }: Pr
 
       {/* Collection list */}
       <div className="mt-2 space-y-0.5">
-        {collections.map((col) => (
+        {isLoading ? (
+          Array.from({ length: 3 }).map((_, i) => (
+            <div key={i} className="flex items-center px-3 py-2 gap-2">
+              <Skeleton className="w-2.5 h-2.5 rounded-full shrink-0" />
+              <Skeleton className="h-4 flex-1" />
+              <Skeleton className="h-3 w-4 shrink-0" />
+            </div>
+          ))
+        ) : (
+        collections.map((col) => (
           <div key={col.id} className="group flex items-center">
             {editingId === col.id ? (
               <div className="flex items-center gap-1 w-full px-1">
@@ -176,7 +187,8 @@ export default function CollectionSidebar({ selected, onSelect, totalCount }: Pr
               </>
             )}
           </div>
-        ))}
+        ))
+        )}
       </div>
 
       {/* Create new */}
@@ -209,10 +221,10 @@ export default function CollectionSidebar({ selected, onSelect, totalCount }: Pr
           </div>
           <div className="flex gap-1">
             <Button size="sm" onClick={handleCreate}>
-              {language === 'ko' ? '생성' : 'Create'}
+              {t.collections.createButton}
             </Button>
             <Button variant="ghost" size="sm" onClick={() => setIsCreating(false)}>
-              {language === 'ko' ? '취소' : 'Cancel'}
+              {t.collections.cancelButton}
             </Button>
           </div>
         </div>
