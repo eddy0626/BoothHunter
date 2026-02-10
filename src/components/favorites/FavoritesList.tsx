@@ -96,7 +96,7 @@ export default memo(function FavoritesList({ items }: Props) {
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center text-gray-400 text-sm">
-                  No Image
+                  {t.item.noImage}
                 </div>
               )}
             </div>

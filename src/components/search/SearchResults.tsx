@@ -14,7 +14,7 @@ interface Props {
 
 export default function SearchResults({ items, isLoading, error, totalCount }: Props) {
   const { isFavorite, addFavorite, removeFavorite } = useFavorites();
-  const { t, language } = useI18n();
+  const { t } = useI18n();
 
   if (isLoading) {
     return (
@@ -52,10 +52,7 @@ export default function SearchResults({ items, isLoading, error, totalCount }: P
     );
   }
 
-  const resultsText =
-    language === 'ko'
-      ? `총 ${totalCount?.toLocaleString()}개의 결과`
-      : `${totalCount?.toLocaleString()} results`;
+  const resultsText = totalCount != null ? t.search.resultsCount(totalCount.toLocaleString()) : '';
 
   return (
     <div>

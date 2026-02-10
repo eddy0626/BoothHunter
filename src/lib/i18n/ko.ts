@@ -9,6 +9,7 @@ export const ko: Translations = {
     searching: '검색 중...',
     error: '검색 중 오류가 발생했습니다',
     rateLimited: '요청이 너무 많습니다. 잠시 후 다시 시도해주세요.',
+    resultsCount: (count) => `총 ${count}개의 결과`,
   },
   favorites: {
     title: '즐겨찾기',
@@ -30,6 +31,9 @@ export const ko: Translations = {
     category: '카테고리',
     tags: '태그',
     description: '설명',
+    noImage: '이미지 없음',
+    goBack: '돌아가기',
+    invalidId: '잘못된 아이템 ID입니다.',
   },
   nav: {
     search: '검색',
@@ -48,6 +52,9 @@ export const ko: Translations = {
     reset: '초기화',
     filter: '필터',
     minWishCount: '좋아요 최소',
+    priceMin: '¥ 최소',
+    priceMax: '¥ 최대',
+    wishOrMore: '개 이상',
   },
   avatarFilter: {
     title: '인기 아바타',
@@ -98,6 +105,7 @@ export const ko: Translations = {
     delete: '삭제',
     empty: '컬렉션이 비어있습니다',
     emptyList: '아직 컬렉션이 없습니다',
+    all: (count) => `전체 (${count})`,
     addTo: '컬렉션에 추가',
     removeFrom: '컬렉션에서 제거',
     namePlaceholder: '컬렉션 이름',
@@ -160,6 +168,10 @@ export const ko: Translations = {
     mainNav: '메인 내비게이션',
     collectionNav: '컬렉션 내비게이션',
     filterRegion: '검색 필터',
+    paginationNav: '검색 결과 페이지 탐색',
+    prevPage: '이전 페이지',
+    nextPage: '다음 페이지',
+    pageN: (page) => `${page} 페이지`,
   },
   priceBuckets: {
     free: '무료',

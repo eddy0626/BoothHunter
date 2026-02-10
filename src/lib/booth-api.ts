@@ -251,6 +251,7 @@ export interface PopularAvatar {
   id: number;
   name_ja: string;
   name_ko: string;
+  name_en: string;
   item_count: number;
   thumbnail_url: string | null;
   updated_at: string;

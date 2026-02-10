@@ -25,7 +25,7 @@ interface Props {
 }
 
 export default function FilterPanel({ params, onFilterChange, isEnriching }: Props) {
-  const { t, language } = useI18n();
+  const { t } = useI18n();
   const [isOpen, setIsOpen] = useState(false);
   const [priceMin, setPriceMin] = useState(params.price_min?.toString() ?? '');
   const [priceMax, setPriceMax] = useState(params.price_max?.toString() ?? '');
@@ -136,7 +136,7 @@ export default function FilterPanel({ params, onFilterChange, isEnriching }: Pro
               <div className="flex items-center gap-2">
                 <Input
                   type="number"
-                  placeholder={language === 'ko' ? '¥ 최소' : '¥ Min'}
+                  placeholder={t.filter.priceMin}
                   value={priceMin}
                   onChange={(e) => setPriceMin(e.target.value)}
                   className="w-24 h-8"
@@ -144,7 +144,7 @@ export default function FilterPanel({ params, onFilterChange, isEnriching }: Pro
                 <span className="text-gray-400">~</span>
                 <Input
                   type="number"
-                  placeholder={language === 'ko' ? '¥ 최대' : '¥ Max'}
+                  placeholder={t.filter.priceMax}
                   value={priceMax}
                   onChange={(e) => setPriceMax(e.target.value)}
                   className="w-24 h-8"
@@ -176,7 +176,7 @@ export default function FilterPanel({ params, onFilterChange, isEnriching }: Pro
                   className="w-24 h-8"
                 />
                 <span className="text-xs text-gray-500">
-                  {language === 'ko' ? '개 이상' : 'or more'}
+                  {t.filter.wishOrMore}
                 </span>
                 <Button size="sm" onClick={handleApplyWish}>
                   {t.filter.apply}

@@ -48,7 +48,7 @@ export default memo(function ItemCard({ item, favorited, onAddFavorite, onRemove
             />
           ) : (
             <div className="w-full h-full flex items-center justify-center text-gray-400 text-sm">
-              No Image
+              {t.item.noImage}
             </div>
           )}
           <Tooltip>

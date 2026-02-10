@@ -9,6 +9,7 @@ export const en: Translations = {
     searching: 'Searching...',
     error: 'An error occurred while searching',
     rateLimited: 'Too many requests. Please try again later.',
+    resultsCount: (count) => `${count} results`,
   },
   favorites: {
     title: 'Favorites',
@@ -30,6 +31,9 @@ export const en: Translations = {
     category: 'Category',
     tags: 'Tags',
     description: 'Description',
+    noImage: 'No Image',
+    goBack: 'Go back',
+    invalidId: 'Invalid item ID.',
   },
   nav: {
     search: 'Search',
@@ -48,6 +52,9 @@ export const en: Translations = {
     reset: 'Reset',
     filter: 'Filter',
     minWishCount: 'Min. Wishes',
+    priceMin: '¥ Min',
+    priceMax: '¥ Max',
+    wishOrMore: 'or more',
   },
   avatarFilter: {
     title: 'Popular Avatars',
@@ -98,6 +105,7 @@ export const en: Translations = {
     delete: 'Delete',
     empty: 'Collection is empty',
     emptyList: 'No collections yet',
+    all: (count) => `All (${count})`,
     addTo: 'Add to Collection',
     removeFrom: 'Remove from Collection',
     namePlaceholder: 'Collection name',
@@ -160,6 +168,10 @@ export const en: Translations = {
     mainNav: 'Main navigation',
     collectionNav: 'Collection navigation',
     filterRegion: 'Search filters',
+    paginationNav: 'Search results pagination',
+    prevPage: 'Previous page',
+    nextPage: 'Next page',
+    pageN: (page) => `Page ${page}`,
   },
   priceBuckets: {
     free: 'Free',

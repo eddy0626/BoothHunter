@@ -9,6 +9,7 @@ export interface Translations {
     searching: string;
     error: string;
     rateLimited: string;
+    resultsCount: (count: string) => string;
   };
   favorites: {
     title: string;
@@ -30,6 +31,9 @@ export interface Translations {
     category: string;
     tags: string;
     description: string;
+    noImage: string;
+    goBack: string;
+    invalidId: string;
   };
   nav: {
     search: string;
@@ -48,6 +52,9 @@ export interface Translations {
     reset: string;
     filter: string;
     minWishCount: string;
+    priceMin: string;
+    priceMax: string;
+    wishOrMore: string;
   };
   avatarFilter: {
     title: string;
@@ -98,6 +105,7 @@ export interface Translations {
     delete: string;
     empty: string;
     emptyList: string;
+    all: (count: number) => string;
     addTo: string;
     removeFrom: string;
     namePlaceholder: string;
@@ -160,6 +168,10 @@ export interface Translations {
     mainNav: string;
     collectionNav: string;
     filterRegion: string;
+    paginationNav: string;
+    prevPage: string;
+    nextPage: string;
+    pageN: (page: number) => string;
   };
   priceBuckets: {
     free: string;

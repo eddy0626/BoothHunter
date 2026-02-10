@@ -10,22 +10,17 @@ interface Props {
 }
 
 export default function Pagination({ currentPage, totalPages, onPageChange }: Props) {
-  const { t, language } = useI18n();
+  const { t } = useI18n();
   const pages = getPageNumbers(currentPage, totalPages);
 
-  const navLabel = language === 'ko' ? '검색 결과 페이지 탐색' : 'Search results pagination';
-  const prevLabel = language === 'ko' ? '이전 페이지' : 'Previous page';
-  const nextLabel = language === 'ko' ? '다음 페이지' : 'Next page';
-  const pageLabel = (p: number) => (language === 'ko' ? `${p} 페이지` : `Page ${p}`);
-
   return (
-    <nav role="navigation" aria-label={navLabel} className="flex items-center justify-center gap-1">
+    <nav role="navigation" aria-label={t.a11y.paginationNav} className="flex items-center justify-center gap-1">
       <Button
         variant="ghost"
         size="sm"
         onClick={() => onPageChange(currentPage - 1)}
         disabled={currentPage <= 1}
-        aria-label={prevLabel}
+        aria-label={t.a11y.prevPage}
       >
         <ChevronLeft className="w-4 h-4" />
         {t.common.prev}
@@ -42,7 +37,7 @@ export default function Pagination({ currentPage, totalPages, onPageChange }: Pr
             variant={page === currentPage ? 'default' : 'ghost'}
             size="icon"
             onClick={() => onPageChange(page)}
-            aria-label={pageLabel(page)}
+            aria-label={t.a11y.pageN(page)}
             aria-current={page === currentPage ? 'page' : undefined}
             className={cn('w-8 h-8', page !== currentPage && 'text-gray-600')}
           >
@@ -56,7 +51,7 @@ export default function Pagination({ currentPage, totalPages, onPageChange }: Pr
         size="sm"
         onClick={() => onPageChange(currentPage + 1)}
         disabled={currentPage >= totalPages}
-        aria-label={nextLabel}
+        aria-label={t.a11y.nextPage}
       >
         {t.common.next}
         <ChevronRight className="w-4 h-4" />

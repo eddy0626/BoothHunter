@@ -3,15 +3,21 @@ import { cn } from '@/lib/utils';
 import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
 import { useI18n } from '../../lib/i18n';
 import { usePopularAvatars } from '../../hooks/usePopularAvatars';
+import type { PopularAvatar } from '../../lib/booth-api';
 
 interface Props {
   onSearch: (keyword: string, extra?: { category?: string }) => void;
 }
 
+function getDisplayName(avatar: PopularAvatar, language: string): string {
+  if (language === 'en') return avatar.name_en || avatar.name_ko;
+  return avatar.name_ko;
+}
+
 export default function AvatarQuickFilter({ onSearch }: Props) {
   const { avatars, isLoading } = usePopularAvatars();
   const [activeAvatar, setActiveAvatar] = useState<string | null>(null);
-  const { t } = useI18n();
+  const { t, language } = useI18n();
 
   if (isLoading || avatars.length === 0) return null;
 
@@ -42,32 +48,35 @@ export default function AvatarQuickFilter({ onSearch }: Props) {
         className="flex gap-2 overflow-x-auto pb-2 scrollbar-thin"
         title={t.avatarFilter.clickHint}
       >
-        {avatars.map((avatar) => (
-          <Tooltip key={avatar.name_ja}>
-            <TooltipTrigger asChild>
-              <button
-                onClick={() => handleClick(avatar.name_ja)}
-                onContextMenu={(e) => handleContextMenu(e, avatar.name_ja)}
-                className={cn(
-                  'shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border transition-colors',
-                  activeAvatar === avatar.name_ja
-                    ? 'bg-indigo-100 border-indigo-300 text-indigo-700'
-                    : 'bg-white border-gray-200 text-gray-600 hover:bg-gray-50 hover:border-gray-300',
-                )}
-                aria-label={`${avatar.name_ko} (${avatar.name_ja})${avatar.item_count > 0 ? ` - ${avatar.item_count} ${t.avatarFilter.items}` : ''}`}
-                aria-pressed={activeAvatar === avatar.name_ja}
-              >
-                <span>{avatar.name_ko}</span>
-                {avatar.item_count > 0 && (
-                  <span className="text-[10px] text-gray-400">
-                    {avatar.item_count} {t.avatarFilter.items}
-                  </span>
-                )}
-              </button>
-            </TooltipTrigger>
-            <TooltipContent>{`${avatar.name_ko} (${avatar.name_ja})`}</TooltipContent>
-          </Tooltip>
-        ))}
+        {avatars.map((avatar) => {
+          const displayName = getDisplayName(avatar, language);
+          return (
+            <Tooltip key={avatar.name_ja}>
+              <TooltipTrigger asChild>
+                <button
+                  onClick={() => handleClick(avatar.name_ja)}
+                  onContextMenu={(e) => handleContextMenu(e, avatar.name_ja)}
+                  className={cn(
+                    'shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border transition-colors',
+                    activeAvatar === avatar.name_ja
+                      ? 'bg-indigo-100 border-indigo-300 text-indigo-700'
+                      : 'bg-white border-gray-200 text-gray-600 hover:bg-gray-50 hover:border-gray-300',
+                  )}
+                  aria-label={`${displayName} (${avatar.name_ja})${avatar.item_count > 0 ? ` - ${avatar.item_count} ${t.avatarFilter.items}` : ''}`}
+                  aria-pressed={activeAvatar === avatar.name_ja}
+                >
+                  <span>{displayName}</span>
+                  {avatar.item_count > 0 && (
+                    <span className="text-[10px] text-gray-400">
+                      {avatar.item_count} {t.avatarFilter.items}
+                    </span>
+                  )}
+                </button>
+              </TooltipTrigger>
+              <TooltipContent>{`${displayName} (${avatar.name_ja})`}</TooltipContent>
+            </Tooltip>
+          );
+        })}
       </div>
     </div>
   );

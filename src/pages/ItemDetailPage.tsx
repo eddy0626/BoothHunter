@@ -28,7 +28,7 @@ export default function ItemDetailPage() {
   const itemId = parsedId;
   const [currentImage, setCurrentImage] = useState(0);
   const { isFavorite, addFavorite, removeFavorite } = useFavorites();
-  const { t, language } = useI18n();
+  const { t } = useI18n();
   const {
     translatedText,
     isTranslating,
@@ -62,8 +62,8 @@ export default function ItemDetailPage() {
     enabled: !isNaN(itemId),
   });
 
-  const backText = language === 'ko' ? '돌아가기' : 'Go back';
-  const invalidIdText = language === 'ko' ? '잘못된 아이템 ID입니다.' : 'Invalid item ID.';
+  const backText = t.item.goBack;
+  const invalidIdText = t.item.invalidId;
 
   if (isNaN(itemId)) {
     return (
@@ -165,7 +165,7 @@ export default function ItemDetailPage() {
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center text-gray-400">
-                  No Image
+                  {t.item.noImage}
                 </div>
               )}
 

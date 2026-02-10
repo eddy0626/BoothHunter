@@ -118,6 +118,16 @@ impl AppDatabase {
             conn.execute("DELETE FROM popular_avatars WHERE is_default = 1", [])?;
         }
 
+        // Migration v6: add name_en column to popular_avatars
+        let has_name_en: bool = conn
+            .prepare("SELECT name_en FROM popular_avatars LIMIT 0")
+            .is_ok();
+        if !has_name_en {
+            conn.execute_batch(
+                "ALTER TABLE popular_avatars ADD COLUMN name_en TEXT NOT NULL DEFAULT '';"
+            )?;
+        }
+
         // Seed default popular avatars (INSERT OR IGNORE is idempotent)
         Self::seed_default_avatars(&conn)?;
 
@@ -161,32 +171,37 @@ impl AppDatabase {
     }
 
     fn seed_default_avatars(conn: &Connection) -> AppResult<()> {
-        let defaults: &[(&str, &str)] = &[
-            ("キプフェル", "키프펠"),
-            ("ルルネ", "루루네"),
-            ("ミルティナ", "밀티나"),
-            ("まめひなた", "마메히나타"),
-            ("ショコラ", "쇼콜라"),
-            ("しお", "시오"),
-            ("Grus", "그루스"),
-            ("りりか", "리리카"),
-            ("狐雪", "코유키"),
-            ("ミント", "민트"),
-            ("みなほし", "미나호시"),
-            ("しらつめ", "시라츠메"),
-            ("リルモワ", "리루모와"),
-            ("ソラハ", "소라하"),
-            ("碼希", "마키"),
-            ("カルネ", "카르네"),
-            ("リーファ", "리파"),
-            ("ラズリ", "라즈리"),
-            ("ルーナリット", "루나릿"),
-            ("ハオラン", "하오란"),
+        let defaults: &[(&str, &str, &str)] = &[
+            ("キプフェル", "키프펠", "Kipfel"),
+            ("ルルネ", "루루네", "Rurune"),
+            ("ミルティナ", "밀티나", "Miltina"),
+            ("まめひなた", "마메히나타", "Mamehinata"),
+            ("ショコラ", "쇼콜라", "Chocolat"),
+            ("しお", "시오", "Shio"),
+            ("Grus", "그루스", "Grus"),
+            ("りりか", "리리카", "Ririka"),
+            ("狐雪", "코유키", "Koyuki"),
+            ("ミント", "민트", "Mint"),
+            ("みなほし", "미나호시", "Minahoshi"),
+            ("しらつめ", "시라츠메", "Shiratsume"),
+            ("リルモワ", "리루모와", "Lilmoire"),
+            ("ソラハ", "소라하", "Soraha"),
+            ("碼希", "마키", "Maki"),
+            ("カルネ", "카르네", "Carne"),
+            ("リーファ", "리파", "Leefa"),
+            ("ラズリ", "라즈리", "Lazuli"),
+            ("ルーナリット", "루나릿", "Lunalit"),
+            ("ハオラン", "하오란", "Haolan"),
         ];
-        for (ja, ko) in defaults {
+        for (ja, ko, en) in defaults {
             conn.execute(
-                "INSERT OR IGNORE INTO popular_avatars (name_ja, name_ko, is_default) VALUES (?1, ?2, 1)",
-                params![ja, ko],
+                "INSERT OR IGNORE INTO popular_avatars (name_ja, name_ko, name_en, is_default) VALUES (?1, ?2, ?3, 1)",
+                params![ja, ko, en],
+            )?;
+            // Update name_en for existing rows that may have empty name_en
+            conn.execute(
+                "UPDATE popular_avatars SET name_en = ?1 WHERE name_ja = ?2 AND name_en = ''",
+                params![en, ja],
             )?;
         }
         Ok(())

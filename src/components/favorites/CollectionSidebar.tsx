@@ -38,7 +38,7 @@ interface Props {
 
 export default function CollectionSidebar({ selected, onSelect, totalCount }: Props) {
   const { collections, isLoading, create, rename, remove } = useCollections();
-  const { t, language } = useI18n();
+  const { t } = useI18n();
   const [isCreating, setIsCreating] = useState(false);
   const [newName, setNewName] = useState('');
   const [newColor, setNewColor] = useState(COLORS[0]);
@@ -97,7 +97,7 @@ export default function CollectionSidebar({ selected, onSelect, totalCount }: Pr
             : 'text-gray-700 hover:bg-gray-100',
         )}
       >
-        {language === 'ko' ? `전체 (${totalCount})` : `All (${totalCount})`}
+        {t.collections.all(totalCount)}
       </button>
 
       {/* Collection list */}

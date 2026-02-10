@@ -36,6 +36,7 @@ pub struct PopularAvatar {
     pub id: i64,
     pub name_ja: String,
     pub name_ko: String,
+    pub name_en: String,
     pub item_count: i64,
     pub thumbnail_url: Option<String>,
     pub updated_at: String,
@@ -164,7 +165,7 @@ pub fn remove_favorite(db: State<'_, AppDatabase>, item_id: i64) -> AppResult<()
 pub fn get_popular_avatars(db: State<'_, AppDatabase>) -> AppResult<Vec<PopularAvatar>> {
     let conn = db.conn()?;
     let mut stmt = conn.prepare(
-        "SELECT id, name_ja, name_ko, item_count, thumbnail_url, updated_at, is_default
+        "SELECT id, name_ja, name_ko, name_en, item_count, thumbnail_url, updated_at, is_default
          FROM popular_avatars ORDER BY item_count DESC, id ASC",
     )?;
     let rows = stmt
@@ -173,10 +174,11 @@ pub fn get_popular_avatars(db: State<'_, AppDatabase>) -> AppResult<Vec<PopularA
                 id: row.get(0)?,
                 name_ja: row.get(1)?,
                 name_ko: row.get(2)?,
-                item_count: row.get(3)?,
-                thumbnail_url: row.get(4)?,
-                updated_at: row.get(5)?,
-                is_default: row.get(6)?,
+                name_en: row.get(3)?,
+                item_count: row.get(4)?,
+                thumbnail_url: row.get(5)?,
+                updated_at: row.get(6)?,
+                is_default: row.get(7)?,
             })
         })?
         .collect::<Result<Vec<_>, _>>()?;
