@@ -60,11 +60,14 @@ function buildSearchUrl(params: SearchParams): string {
     url += `&sort=${params.sort}`;
   }
 
+  const isValidPrice = (p: unknown): p is number =>
+    typeof p === 'number' && Number.isFinite(p) && p >= 0;
+
   if (params.only_free) {
     url += '&max_price=0';
   } else {
-    if (params.price_min != null) url += `&min_price=${params.price_min}`;
-    if (params.price_max != null) url += `&max_price=${params.price_max}`;
+    if (isValidPrice(params.price_min)) url += `&min_price=${Math.floor(params.price_min)}`;
+    if (isValidPrice(params.price_max)) url += `&max_price=${Math.floor(params.price_max)}`;
   }
 
   return url;
@@ -103,8 +106,8 @@ export async function getBoothItem(itemId: number): Promise<BoothItem> {
       const item = jsonToBoothItem(data);
       if (item) return item;
     }
-  } catch {
-    // fall through to HTML
+  } catch (e) {
+    console.warn(`JSON API failed for item ${itemId}, falling back to HTML:`, e);
   }
 
   // Fallback to HTML

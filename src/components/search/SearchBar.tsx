@@ -105,7 +105,7 @@ export default function SearchBar({ onSearch, initialKeyword = '', isLoading }: 
   }, []);
 
   return (
-    <form onSubmit={handleSubmit} className="flex gap-2">
+    <form onSubmit={handleSubmit} role="search" className="flex gap-2">
       <div className="relative flex-1">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
         <Input
@@ -123,12 +123,15 @@ export default function SearchBar({ onSearch, initialKeyword = '', isLoading }: 
         {showDropdown && suggestions.length > 0 && (
           <div
             ref={dropdownRef}
+            role="listbox"
             className="absolute z-50 top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden"
           >
             {suggestions.map((s, idx) => (
               <button
                 key={`${s.converted}-${idx}`}
                 type="button"
+                role="option"
+                aria-selected={idx === selectedIdx}
                 onClick={() => handleSelectSuggestion(s)}
                 className={cn(
                   'w-full flex items-center justify-between px-4 py-2.5 text-sm text-left transition-colors',

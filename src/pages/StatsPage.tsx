@@ -1,4 +1,5 @@
-import { Heart, FolderOpen, Tag, Search } from 'lucide-react';
+import { useId } from 'react';
+import { Heart, FolderOpen, Tag, Search, BarChart3 } from 'lucide-react';
 import { useStatistics } from '../hooks/useStatistics';
 import { useI18n } from '../lib/i18n';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -63,15 +64,29 @@ function StatCard({
   );
 }
 
+// ── Empty state for sections ─────────────────────────
+
+function EmptySection({ text }: { text: string }) {
+  return (
+    <div className="flex flex-col items-center py-6 text-gray-400">
+      <BarChart3 className="w-8 h-8 mb-2" />
+      <p className="text-sm">{text}</p>
+    </div>
+  );
+}
+
 // ── Section wrapper ───────────────────────────────────
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
+  const headingId = useId();
   return (
     <Card>
-      <CardHeader className="pb-2">
-        <CardTitle className="text-sm font-semibold text-gray-700">{title}</CardTitle>
-      </CardHeader>
-      <CardContent>{children}</CardContent>
+      <section aria-labelledby={headingId}>
+        <CardHeader className="pb-2">
+          <CardTitle id={headingId} className="text-sm font-semibold text-gray-700">{title}</CardTitle>
+        </CardHeader>
+        <CardContent>{children}</CardContent>
+      </section>
     </Card>
   );
 }
@@ -127,23 +142,23 @@ export default function StatsPage() {
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           <StatCard
             icon={Heart}
-            label="즐겨찾기"
+            label={t.stats.favorites}
             value={stats?.favorites_count ?? 0}
-            sub={`총 ¥${(stats?.total_value ?? 0).toLocaleString()}`}
+            sub={t.stats.totalValue((stats?.total_value ?? 0).toLocaleString())}
             color="bg-pink-500"
           />
           <StatCard
             icon={FolderOpen}
-            label="컬렉션"
+            label={t.stats.collections}
             value={stats?.collections_count ?? 0}
             color="bg-indigo-500"
           />
-          <StatCard icon={Tag} label="태그" value={stats?.tags_count ?? 0} color="bg-amber-500" />
+          <StatCard icon={Tag} label={t.stats.tags} value={stats?.tags_count ?? 0} color="bg-amber-500" />
           <StatCard
             icon={Search}
-            label="총 검색"
+            label={t.stats.totalSearches}
             value={stats?.searches_count ?? 0}
-            sub={stats?.avg_price ? `평균가 ¥${stats.avg_price.toLocaleString()}` : undefined}
+            sub={stats?.avg_price ? t.stats.avgPrice(stats.avg_price.toLocaleString()) : undefined}
             color="bg-emerald-500"
           />
         </div>
@@ -151,9 +166,9 @@ export default function StatsPage() {
         {/* Charts row 1 */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Category distribution */}
-          <Section title="카테고리별 즐겨찾기">
+          <Section title={t.stats.categoryDistribution}>
             {categories.length === 0 ? (
-              <p className="text-sm text-gray-400">데이터 없음</p>
+              <EmptySection text={t.stats.noData} />
             ) : (
               <div className="space-y-2">
                 {categories.map((c) => (
@@ -172,7 +187,7 @@ export default function StatsPage() {
           {/* Price distribution */}
           <Section title={t.stats.priceDistribution}>
             {prices.length === 0 ? (
-              <p className="text-sm text-gray-400">{t.stats.noData}</p>
+              <EmptySection text={t.stats.noData} />
             ) : (
               <div className="space-y-2">
                 {prices.map((p) => {
@@ -198,7 +213,7 @@ export default function StatsPage() {
           {/* Top shops */}
           <Section title={t.stats.topShops}>
             {shops.length === 0 ? (
-              <p className="text-sm text-gray-400">{t.stats.noData}</p>
+              <EmptySection text={t.stats.noData} />
             ) : (
               <div className="space-y-2">
                 {shops.map((s) => (
@@ -217,7 +232,7 @@ export default function StatsPage() {
           {/* Top tags */}
           <Section title={t.stats.topTags}>
             {tags.length === 0 ? (
-              <p className="text-sm text-gray-400">{t.stats.noData}</p>
+              <EmptySection text={t.stats.noData} />
             ) : (
               <div className="space-y-2">
                 {tags.map((tag) => (
@@ -239,7 +254,7 @@ export default function StatsPage() {
           {/* Monthly timeline */}
           <Section title={t.stats.monthlyFavorites}>
             {monthly.length === 0 ? (
-              <p className="text-sm text-gray-400">{t.stats.noData}</p>
+              <EmptySection text={t.stats.noData} />
             ) : (
               <div className="flex items-end gap-1 h-40">
                 {monthly.map((m) => {
@@ -266,7 +281,7 @@ export default function StatsPage() {
           {/* Search history */}
           <Section title={t.stats.searchHistory}>
             {searches.length === 0 ? (
-              <p className="text-sm text-gray-400">{t.stats.noData}</p>
+              <EmptySection text={t.stats.noData} />
             ) : (
               <div className="space-y-2">
                 {searches.map((s) => (

@@ -24,7 +24,8 @@ import { open } from '@tauri-apps/plugin-shell';
 
 export default function ItemDetailPage() {
   const { id } = useParams<{ id: string }>();
-  const itemId = id ? parseInt(id, 10) : NaN;
+  const parsedId = id && /^\d+$/.test(id) ? parseInt(id, 10) : NaN;
+  const itemId = parsedId;
   const [currentImage, setCurrentImage] = useState(0);
   const { isFavorite, addFavorite, removeFavorite } = useFavorites();
   const { t, language } = useI18n();
@@ -84,7 +85,7 @@ export default function ItemDetailPage() {
     try {
       const parsed = new URL(item.url);
       const host = parsed.hostname;
-      const validHost = host === 'booth.pm' || (host != null && host.endsWith('.booth.pm'));
+      const validHost = host === 'booth.pm' || /^[\w-]+\.booth\.pm$/.test(host);
       if (parsed.protocol === 'https:' && validHost) {
         await open(item.url);
       }

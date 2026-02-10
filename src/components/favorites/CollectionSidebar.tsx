@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { FolderPlus, Trash2, Pencil, Check, X } from 'lucide-react';
+import { FolderPlus, FolderOpen, Trash2, Pencil, Check, X } from 'lucide-react';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -86,7 +86,7 @@ export default function CollectionSidebar({ selected, onSelect, totalCount }: Pr
   const cancelLabel = t.collections.cancelButton;
 
   return (
-    <div className="w-48 shrink-0">
+    <nav className="w-48 shrink-0" role="navigation" aria-label={t.a11y.collectionNav}>
       {/* All items */}
       <button
         onClick={() => onSelect(null)}
@@ -110,6 +110,11 @@ export default function CollectionSidebar({ selected, onSelect, totalCount }: Pr
               <Skeleton className="h-3 w-4 shrink-0" />
             </div>
           ))
+        ) : collections.length === 0 ? (
+          <div className="flex flex-col items-center py-6 text-gray-400">
+            <FolderOpen className="w-8 h-8 mb-2" />
+            <p className="text-xs text-center">{t.collections.emptyList}</p>
+          </div>
         ) : (
         collections.map((col) => (
           <div key={col.id} className="group flex items-center">
@@ -126,10 +131,10 @@ export default function CollectionSidebar({ selected, onSelect, totalCount }: Pr
                   }}
                   className="flex-1 h-7 text-sm"
                 />
-                <button onClick={() => handleRename(col.id)} className="p-0.5 text-green-600">
+                <button onClick={() => handleRename(col.id)} className="p-0.5 text-green-600" aria-label={t.collections.rename}>
                   <Check className="w-3.5 h-3.5" />
                 </button>
-                <button onClick={() => setEditingId(null)} className="p-0.5 text-gray-400">
+                <button onClick={() => setEditingId(null)} className="p-0.5 text-gray-400" aria-label={t.collections.cancelButton}>
                   <X className="w-3.5 h-3.5" />
                 </button>
               </div>
@@ -158,12 +163,13 @@ export default function CollectionSidebar({ selected, onSelect, totalCount }: Pr
                       setEditName(col.name);
                     }}
                     className="p-1 text-gray-400 hover:text-gray-600"
+                    aria-label={t.collections.rename}
                   >
                     <Pencil className="w-3 h-3" />
                   </button>
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
-                      <button className="p-1 text-gray-400 hover:text-red-500">
+                      <button className="p-1 text-gray-400 hover:text-red-500" aria-label={t.collections.delete}>
                         <Trash2 className="w-3 h-3" />
                       </button>
                     </AlertDialogTrigger>
@@ -216,6 +222,7 @@ export default function CollectionSidebar({ selected, onSelect, totalCount }: Pr
                   newColor === c ? 'border-gray-800' : 'border-transparent',
                 )}
                 style={{ backgroundColor: c }}
+                aria-label={c}
               />
             ))}
           </div>
@@ -237,6 +244,6 @@ export default function CollectionSidebar({ selected, onSelect, totalCount }: Pr
           {t.collections.create}
         </button>
       )}
-    </div>
+    </nav>
   );
 }

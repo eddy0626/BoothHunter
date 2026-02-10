@@ -19,6 +19,8 @@ export interface Translations {
     confirmDeleteDesc: string;
     deleteButton: string;
     cancelButton: string;
+    searchPlaceholder: string;
+    countText: (count: number) => string;
   };
   item: {
     free: string;
@@ -79,8 +81,8 @@ export interface Translations {
     collections: string;
     tags: string;
     totalSearches: string;
-    totalValue: string;
-    avgPrice: string;
+    totalValue: (value: string) => string;
+    avgPrice: (price: string) => string;
     categoryDistribution: string;
     priceDistribution: string;
     topShops: string;
@@ -95,6 +97,7 @@ export interface Translations {
     rename: string;
     delete: string;
     empty: string;
+    emptyList: string;
     addTo: string;
     removeFrom: string;
     namePlaceholder: string;
@@ -151,6 +154,12 @@ export interface Translations {
     install: string;
     dismiss: string;
     error: string;
+  };
+  a11y: {
+    skipToContent: string;
+    mainNav: string;
+    collectionNav: string;
+    filterRegion: string;
   };
   priceBuckets: {
     free: string;

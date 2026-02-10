@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { X } from 'lucide-react';
 import { toast } from 'sonner';
 import { Badge } from '@/components/ui/badge';
@@ -15,7 +15,14 @@ export default function TagEditor({ itemId, tags, allUserTags, onSetTags }: Prop
   const [input, setInput] = useState('');
   const [showSuggestions, setShowSuggestions] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const blurTimeoutRef = useRef<ReturnType<typeof setTimeout>>(undefined);
   const { t } = useI18n();
+
+  useEffect(() => {
+    return () => {
+      if (blurTimeoutRef.current) clearTimeout(blurTimeoutRef.current);
+    };
+  }, []);
 
   const suggestions = allUserTags
     .filter((t) => t.toLowerCase().includes(input.toLowerCase()) && !tags.includes(t))
@@ -23,7 +30,7 @@ export default function TagEditor({ itemId, tags, allUserTags, onSetTags }: Prop
 
   const addTag = async (tag: string) => {
     const trimmed = tag.trim();
-    if (!trimmed || tags.includes(trimmed)) return;
+    if (!trimmed || trimmed.length > 100 || tags.includes(trimmed)) return;
     try {
       await onSetTags(itemId, [...tags, trimmed]);
       setInput('');
@@ -77,7 +84,7 @@ export default function TagEditor({ itemId, tags, allUserTags, onSetTags }: Prop
               setShowSuggestions(true);
             }}
             onFocus={() => setShowSuggestions(true)}
-            onBlur={() => setTimeout(() => setShowSuggestions(false), 150)}
+            onBlur={() => { blurTimeoutRef.current = setTimeout(() => setShowSuggestions(false), 150); }}
             onKeyDown={handleKeyDown}
             placeholder={tags.length === 0 ? t.tags.addTag : '+'}
             maxLength={100}

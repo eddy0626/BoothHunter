@@ -1,3 +1,4 @@
+import { SearchX } from 'lucide-react';
 import type { BoothItem } from '../../lib/types';
 import { useI18n } from '../../lib/i18n';
 import { useFavorites } from '../../hooks/useFavorites';
@@ -44,8 +45,9 @@ export default function SearchResults({ items, isLoading, error, totalCount }: P
 
   if (items.length === 0) {
     return (
-      <div className="flex items-center justify-center py-20">
-        <p className="text-sm text-gray-500">{t.search.noResults}</p>
+      <div className="flex flex-col items-center justify-center py-20 text-gray-400">
+        <SearchX className="w-16 h-16 mb-4" />
+        <p className="text-lg">{t.search.noResults}</p>
       </div>
     );
   }
@@ -58,15 +60,16 @@ export default function SearchResults({ items, isLoading, error, totalCount }: P
   return (
     <div>
       {totalCount != null && <p className="text-sm text-gray-500 mb-4">{resultsText}</p>}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+      <div role="list" className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
         {items.map((item) => (
-          <ItemCard
-            key={item.id}
-            item={item}
-            favorited={isFavorite(item.id)}
-            onAddFavorite={addFavorite}
-            onRemoveFavorite={removeFavorite}
-          />
+          <div key={item.id} role="listitem">
+            <ItemCard
+              item={item}
+              favorited={isFavorite(item.id)}
+              onAddFavorite={addFavorite}
+              onRemoveFavorite={removeFavorite}
+            />
+          </div>
         ))}
       </div>
     </div>

@@ -74,7 +74,7 @@ export default function FilterPanel({ params, onFilterChange, isEnriching }: Pro
   };
 
   return (
-    <div>
+    <div role="region" aria-label={t.a11y.filterRegion}>
       <div className="flex items-center gap-3 flex-wrap">
         <Button
           variant="outline"

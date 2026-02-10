@@ -105,7 +105,7 @@ export function useTranslation() {
           throw lastError ?? new Error('All translation instances failed');
         })();
         inflight.set(text, apiPromise);
-        apiPromise.finally(() => inflight.delete(text));
+        apiPromise.finally(() => inflight.delete(text)).catch(() => {});
       }
 
       const translated = await apiPromise;
