@@ -52,7 +52,7 @@
   },
   "plugins": {
     "updater": {
-      "pubkey": "YOUR_PUBLIC_KEY_HERE",
+      "pubkey": "RWSFHb2B8EQ/FqsJfAsftK5vZXkqV7CtQ6EqFyADFgnZGMboQA38pbXO",
       "endpoints": ["https://github.com/eddy0626/BoothHunter/releases/latest/download/latest.json"],
       "windows": {
         "installMode": "passive"
