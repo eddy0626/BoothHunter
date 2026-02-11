@@ -100,7 +100,7 @@ export default function StatsPage() {
 
   if (isLoading) {
     return (
-      <div className="p-6">
+      <div className="p-3 md:p-6">
         <div className="max-w-6xl mx-auto space-y-6">
           <Skeleton className="h-8 w-48" />
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
@@ -134,7 +134,7 @@ export default function StatsPage() {
   const monthMax = maxOf(monthly);
 
   return (
-    <div className="p-6">
+    <div className="p-3 md:p-6">
       <div className="max-w-6xl mx-auto space-y-6">
         <h2 className="text-xl font-bold text-gray-900">{t.stats.title}</h2>
 

@@ -38,7 +38,7 @@ export default function FavoritesPage() {
   }, [tagFilter, baseItems]);
 
   return (
-    <div className="p-6">
+    <div className="p-3 md:p-6">
       <div className="max-w-7xl mx-auto">
         <h2 className="text-xl font-bold text-gray-900 mb-6">{t.favorites.title}</h2>
 

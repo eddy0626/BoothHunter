@@ -42,12 +42,15 @@ export interface Translations {
     history: string;
     vrchat: string;
     allCategories: string;
+    category: string;
+    language: string;
   };
   filter: {
     category: string;
     sort: string;
     priceRange: string;
     freeOnly: string;
+    freeShort: string;
     apply: string;
     reset: string;
     filter: string;

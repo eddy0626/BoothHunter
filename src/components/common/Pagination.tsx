@@ -21,9 +21,10 @@ export default function Pagination({ currentPage, totalPages, onPageChange }: Pr
         onClick={() => onPageChange(currentPage - 1)}
         disabled={currentPage <= 1}
         aria-label={t.a11y.prevPage}
+        className="min-h-[44px] md:min-h-0"
       >
         <ChevronLeft className="w-4 h-4" />
-        {t.common.prev}
+        <span className="hidden md:inline">{t.common.prev}</span>
       </Button>
 
       {pages.map((page, idx) =>
@@ -39,7 +40,7 @@ export default function Pagination({ currentPage, totalPages, onPageChange }: Pr
             onClick={() => onPageChange(page)}
             aria-label={t.a11y.pageN(page)}
             aria-current={page === currentPage ? 'page' : undefined}
-            className={cn('w-8 h-8', page !== currentPage && 'text-gray-600')}
+            className={cn('w-10 h-10 md:w-8 md:h-8', page !== currentPage && 'text-gray-600')}
           >
             {page}
           </Button>
@@ -52,8 +53,9 @@ export default function Pagination({ currentPage, totalPages, onPageChange }: Pr
         onClick={() => onPageChange(currentPage + 1)}
         disabled={currentPage >= totalPages}
         aria-label={t.a11y.nextPage}
+        className="min-h-[44px] md:min-h-0"
       >
-        {t.common.next}
+        <span className="hidden md:inline">{t.common.next}</span>
         <ChevronRight className="w-4 h-4" />
       </Button>
     </nav>

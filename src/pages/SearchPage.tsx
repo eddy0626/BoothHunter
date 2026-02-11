@@ -50,20 +50,23 @@ export default function SearchPage() {
   const categoryLabel = activeCategory ? getCategoryLabel(activeCategory, t) : null;
 
   return (
-    <div className="p-6">
+    <div className="p-3 md:p-6">
       <div className="max-w-7xl mx-auto">
-        <SearchBar
-          onSearch={handleSearch}
-          initialKeyword={currentParams?.keyword}
-          isLoading={isLoading}
-        />
+        {/* Sticky search bar on mobile */}
+        <div className="sticky top-0 z-30 bg-gray-50 -mx-3 px-3 pb-2 md:static md:mx-0 md:px-0 md:pb-0 md:bg-transparent">
+          <SearchBar
+            onSearch={handleSearch}
+            initialKeyword={currentParams?.keyword}
+            isLoading={isLoading}
+          />
+        </div>
 
         {/* Active category badge */}
         {categoryLabel && (
           <div className="mt-2 flex items-center gap-2">
             <Badge className="gap-1 bg-indigo-100 text-indigo-700 border-transparent hover:bg-indigo-100">
               {categoryLabel}
-              <button onClick={handleClearCategory} className="ml-0.5 hover:text-indigo-900">
+              <button onClick={handleClearCategory} className="ml-0.5 p-0.5 hover:text-indigo-900">
                 <X className="w-3 h-3" />
               </button>
             </Badge>

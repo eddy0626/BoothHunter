@@ -19,7 +19,7 @@ export default function SearchResults({ items, isLoading, error, totalCount }: P
   if (isLoading) {
     return (
       <div role="status" aria-live="polite">
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2 md:gap-4">
           {Array.from({ length: 10 }).map((_, i) => (
             <div key={i} className="rounded-lg border border-gray-200 overflow-hidden">
               <Skeleton className="aspect-square w-full" />
@@ -57,7 +57,7 @@ export default function SearchResults({ items, isLoading, error, totalCount }: P
   return (
     <div>
       {totalCount != null && <p className="text-sm text-gray-500 mb-4">{resultsText}</p>}
-      <div role="list" className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+      <div role="list" className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2 md:gap-4">
         {items.map((item) => (
           <div key={item.id} role="listitem">
             <ItemCard

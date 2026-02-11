@@ -43,7 +43,7 @@ export default function FavoriteButton({ item, favorited, onAdd, onRemove }: Pro
           onClick={handleClick}
           disabled={isPending}
           className={cn(
-            'p-1 rounded-md transition-colors shrink-0',
+            'p-2 md:p-1 rounded-md transition-colors shrink-0',
             isPending && 'opacity-50 cursor-not-allowed',
             favorited ? 'text-red-500 hover:text-red-600' : 'text-gray-300 hover:text-red-400',
           )}

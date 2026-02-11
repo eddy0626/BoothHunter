@@ -67,7 +67,7 @@ export default function ItemDetailPage() {
 
   if (isNaN(itemId)) {
     return (
-      <div className="p-6">
+      <div className="p-3 md:p-6">
         <Link
           to="/"
           className="flex items-center gap-1 text-sm text-gray-500 hover:text-gray-700 mb-4"
@@ -107,7 +107,7 @@ export default function ItemDetailPage() {
 
   if (isLoading) {
     return (
-      <div className="p-6">
+      <div className="p-3 md:p-6">
         <div className="max-w-5xl mx-auto">
           <Skeleton className="h-5 w-24 mb-4" />
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -127,7 +127,7 @@ export default function ItemDetailPage() {
 
   if (error || !item) {
     return (
-      <div className="p-6">
+      <div className="p-3 md:p-6">
         <Link
           to="/"
           className="flex items-center gap-1 text-sm text-gray-500 hover:text-gray-700 mb-4"
@@ -143,7 +143,7 @@ export default function ItemDetailPage() {
   const priceText = item.price === 0 ? t.item.free : `¥${item.price.toLocaleString()}`;
 
   return (
-    <div className="p-6">
+    <div className="p-3 md:p-6">
       <div className="max-w-5xl mx-auto">
         <Link
           to="/"

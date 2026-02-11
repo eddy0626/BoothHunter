@@ -55,7 +55,7 @@ export default memo(function ItemCard({ item, favorited, onAddFavorite, onRemove
             <TooltipTrigger asChild>
               <button
                 onClick={handleCopyLink}
-                className="absolute top-2 right-2 p-1.5 bg-black/50 text-white rounded-md opacity-0 group-hover:opacity-100 transition-opacity hover:bg-black/70"
+                className="absolute top-1.5 right-1.5 p-2 md:p-1.5 bg-black/50 text-white rounded-md opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity hover:bg-black/70"
               >
                 <Link2 className="w-3.5 h-3.5" />
               </button>
@@ -64,7 +64,7 @@ export default memo(function ItemCard({ item, favorited, onAddFavorite, onRemove
           </Tooltip>
         </div>
       </Link>
-      <div className="p-3">
+      <div className="p-2 md:p-3">
         <div className="flex items-start justify-between gap-1">
           <div className="flex-1 min-w-0">
             <div className="flex items-start gap-1">
@@ -72,7 +72,7 @@ export default memo(function ItemCard({ item, favorited, onAddFavorite, onRemove
                 <TooltipTrigger asChild>
                   <Link
                     to={`/item/${item.id}`}
-                    className="text-sm font-medium text-gray-900 line-clamp-2 hover:text-indigo-600 flex-1"
+                    className="text-xs md:text-sm font-medium text-gray-900 line-clamp-2 hover:text-indigo-600 flex-1"
                   >
                     {item.name}
                   </Link>
@@ -81,7 +81,7 @@ export default memo(function ItemCard({ item, favorited, onAddFavorite, onRemove
               </Tooltip>
               <button
                 onClick={() => translate(item.name)}
-                className="p-0.5 text-gray-400 hover:text-indigo-600 transition-colors shrink-0"
+                className="p-2 md:p-0.5 text-gray-400 hover:text-indigo-600 transition-colors shrink-0"
                 title={t.translation.button}
               >
                 {isTranslating ? (
@@ -105,25 +105,25 @@ export default memo(function ItemCard({ item, favorited, onAddFavorite, onRemove
             onRemove={onRemoveFavorite}
           />
         </div>
-        <div className="mt-2 flex items-center justify-between">
+        <div className="mt-1.5 md:mt-2 flex items-center justify-between">
           <span
-            className={`text-sm font-bold ${item.price === 0 ? 'text-green-600' : 'text-gray-900'}`}
+            className={`text-xs md:text-sm font-bold ${item.price === 0 ? 'text-green-600' : 'text-gray-900'}`}
           >
             {priceText}
           </span>
           {item.shop_name && (
-            <span className="text-xs text-gray-500 truncate max-w-[120px]">{item.shop_name}</span>
+            <span className="text-[10px] md:text-xs text-gray-500 truncate max-w-[80px] md:max-w-[120px]">{item.shop_name}</span>
           )}
         </div>
-        <div className="mt-1.5 flex items-center gap-1.5 flex-wrap">
+        <div className="mt-1 md:mt-1.5 flex items-center gap-1 md:gap-1.5 flex-wrap">
           {item.category_name && (
-            <Badge variant="secondary" className="text-xs text-gray-500 bg-gray-100">
+            <Badge variant="secondary" className="text-[10px] md:text-xs text-gray-500 bg-gray-100">
               {item.category_name}
             </Badge>
           )}
           {item.wish_lists_count != null && (
-            <span className="flex items-center gap-0.5 text-xs text-pink-500">
-              <Heart className="w-3 h-3" fill="currentColor" />
+            <span className="flex items-center gap-0.5 text-[10px] md:text-xs text-pink-500">
+              <Heart className="w-2.5 h-2.5 md:w-3 md:h-3" fill="currentColor" />
               {item.wish_lists_count.toLocaleString()}
             </span>
           )}

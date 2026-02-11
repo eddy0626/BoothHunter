@@ -54,7 +54,7 @@ export default memo(function FavoritesList({ items }: Props) {
 
   if (isLoading && !items) {
     return (
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2 md:gap-4">
         {Array.from({ length: 8 }).map((_, i) => (
           <div key={i} className="rounded-lg border border-gray-200 overflow-hidden">
             <Skeleton className="aspect-square w-full" />
@@ -78,7 +78,7 @@ export default memo(function FavoritesList({ items }: Props) {
   }
 
   return (
-    <div role="list" className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+    <div role="list" className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2 md:gap-4">
       {displayItems.map((fav) => (
         <div
           key={fav.id}

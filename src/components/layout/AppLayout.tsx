@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import { useI18n } from '../../lib/i18n';
 import Sidebar from './Sidebar';
+import BottomTabBar from './BottomTabBar';
 
 interface Props {
   children: ReactNode;
@@ -18,9 +19,10 @@ export default function AppLayout({ children }: Props) {
         {t.a11y.skipToContent}
       </a>
       <Sidebar />
-      <main id="main-content" className="flex-1 overflow-auto">
+      <main id="main-content" className="flex-1 overflow-auto pb-16 lg:pb-0">
         {children}
       </main>
+      <BottomTabBar />
     </div>
   );
 }
