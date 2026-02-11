@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { NavLink, useNavigate, useSearchParams } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import {
   Search,
   Heart,
@@ -20,8 +20,8 @@ import {
 import { cn } from '@/lib/utils';
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '@/components/ui/collapsible';
 import { VRCHAT_CATEGORIES } from '../../lib/constants';
-import { useSearchContext } from '../../lib/SearchContext';
 import { useI18n, getCategoryLabel } from '../../lib/i18n';
+import { useCategoryNavigation } from '../../hooks/useCategoryNavigation';
 import LanguageSelector from '../common/LanguageSelector';
 
 const ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
@@ -39,43 +39,14 @@ const ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
 
 export default function Sidebar() {
   const [isCategoryOpen, setIsCategoryOpen] = useState(true);
-  const { activeCategory, setActiveCategory } = useSearchContext();
+  const { activeCategory, navigateToCategory } = useCategoryNavigation();
   const { t } = useI18n();
-  const navigate = useNavigate();
-  const [searchParams, setSearchParams] = useSearchParams();
 
   const navItems = [
     { to: '/', icon: Search, label: t.nav.search },
     { to: '/favorites', icon: Heart, label: t.nav.favorites },
     { to: '/stats', icon: BarChart3, label: t.nav.stats },
   ];
-
-  const handleCategoryClick = (jaName: string) => {
-    const next = activeCategory === jaName ? null : jaName;
-    setActiveCategory(next);
-
-    if (searchParams.has('q')) {
-      setSearchParams(
-        (prev) => {
-          const updated = new URLSearchParams(prev);
-          if (next) {
-            updated.set('cat', next);
-            updated.set('sort', 'popular');
-          } else {
-            updated.delete('cat');
-            updated.delete('sort');
-          }
-          updated.set('page', '1');
-          return updated;
-        },
-        { replace: true },
-      );
-    } else if (next) {
-      navigate(`/?q=&cat=${encodeURIComponent(next)}&sort=popular`);
-    } else {
-      navigate('/');
-    }
-  };
 
   return (
     <aside className="hidden lg:flex w-56 bg-white border-r border-gray-200 flex-col">
@@ -124,7 +95,7 @@ export default function Sidebar() {
                 return (
                   <button
                     key={cat.jaName}
-                    onClick={() => handleCategoryClick(cat.jaName)}
+                    onClick={() => navigateToCategory(cat.jaName)}
                     aria-pressed={isActive}
                     className={cn(
                       'flex items-center gap-2.5 w-full px-3 py-1.5 rounded-lg text-sm transition-colors text-left',

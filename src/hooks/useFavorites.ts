@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   getFavorites,
@@ -84,7 +84,7 @@ export function useFavorites() {
     },
   });
 
-  const isFavorite = (itemId: number): boolean => favoriteIdSet.has(itemId);
+  const isFavorite = useCallback((itemId: number): boolean => favoriteIdSet.has(itemId), [favoriteIdSet]);
 
   return {
     favorites,

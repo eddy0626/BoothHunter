@@ -1,10 +1,9 @@
 import { useEffect } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
 import { X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { VRCHAT_CATEGORIES } from '../../lib/constants';
-import { useSearchContext } from '../../lib/SearchContext';
 import { useI18n, getCategoryLabel } from '../../lib/i18n';
+import { useCategoryNavigation } from '../../hooks/useCategoryNavigation';
 
 const ICON_MAP: Record<string, string> = {
   User: '\u{1F464}',
@@ -25,10 +24,8 @@ interface Props {
 }
 
 export default function CategorySheet({ open, onClose }: Props) {
-  const { activeCategory, setActiveCategory } = useSearchContext();
+  const { activeCategory, navigateToCategory } = useCategoryNavigation();
   const { t } = useI18n();
-  const navigate = useNavigate();
-  const [searchParams, setSearchParams] = useSearchParams();
 
   // Lock body scroll when open
   useEffect(() => {
@@ -53,31 +50,7 @@ export default function CategorySheet({ open, onClose }: Props) {
   }, [open, onClose]);
 
   const handleCategoryClick = (jaName: string) => {
-    const next = activeCategory === jaName ? null : jaName;
-    setActiveCategory(next);
-
-    if (searchParams.has('q')) {
-      setSearchParams(
-        (prev) => {
-          const updated = new URLSearchParams(prev);
-          if (next) {
-            updated.set('cat', next);
-            updated.set('sort', 'popular');
-          } else {
-            updated.delete('cat');
-            updated.delete('sort');
-          }
-          updated.set('page', '1');
-          return updated;
-        },
-        { replace: true },
-      );
-    } else if (next) {
-      navigate(`/?q=&cat=${encodeURIComponent(next)}&sort=popular`);
-    } else {
-      navigate('/');
-    }
-
+    navigateToCategory(jaName);
     onClose();
   };
 

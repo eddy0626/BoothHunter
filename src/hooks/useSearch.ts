@@ -1,4 +1,4 @@
-import { useCallback, useRef, useEffect, useState } from 'react';
+import { useCallback, useMemo, useRef, useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { searchBooth, cacheItems, saveSearchHistory, enrichWithWishCount } from '../lib/booth-api';
@@ -71,9 +71,13 @@ export function useSearch() {
     gcTime: 5 * 60 * 1000,
   });
 
+  // Stable reference — React Query's structuralSharing keeps this referentially
+  // stable across re-renders when the underlying data hasn't changed.
+  const queryItems = query.data?.items;
+
   // Run wish count enrichment when search results arrive
   useEffect(() => {
-    const items = query.data?.items;
+    const items = queryItems;
     if (!items || items.length === 0) {
       setEnrichedItems([]);
       setIsEnriching(false);
@@ -101,10 +105,10 @@ export function useSearch() {
       .then((final) => {
         if (!controller.signal.aborted) {
           setEnrichedItems(final);
-          cacheItems(final).catch(() => {});
+          cacheItems(final).catch((e) => console.error('Failed to cache enriched items:', e));
         }
       })
-      .catch(() => {})
+      .catch((e) => console.error('Enrichment failed:', e))
       .finally(() => {
         if (!controller.signal.aborted) {
           setIsEnriching(false);
@@ -114,16 +118,19 @@ export function useSearch() {
     return () => {
       controller.abort();
     };
-  }, [query.data?.items]);
+  }, [queryItems]);
 
-  // Client-side wish count filter
+  // Client-side wish count filter (memoized to avoid new array on every render)
   const minWishCount = params?.min_wish_count;
-  const filteredItems =
-    minWishCount != null && minWishCount > 0
-      ? enrichedItems.filter(
-          (item) => item.wish_lists_count != null && item.wish_lists_count >= minWishCount,
-        )
-      : enrichedItems;
+  const filteredItems = useMemo(
+    () =>
+      minWishCount != null && minWishCount > 0
+        ? enrichedItems.filter(
+            (item) => item.wish_lists_count != null && item.wish_lists_count >= minWishCount,
+          )
+        : enrichedItems,
+    [enrichedItems, minWishCount],
+  );
 
   const search = useCallback(
     (keyword: string, extra?: Partial<SearchParams>) => {

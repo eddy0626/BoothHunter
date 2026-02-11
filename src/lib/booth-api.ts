@@ -123,6 +123,10 @@ export async function getBoothItem(itemId: number): Promise<BoothItem> {
 
 // ── JSON item parser (mirrors Rust BoothJsonItemDetail) ──
 
+function isRecord(val: unknown): val is Record<string, unknown> {
+  return typeof val === 'object' && val !== null && !Array.isArray(val);
+}
+
 function parsePrice(val: unknown): number {
   if (typeof val === 'number') return val;
   if (typeof val === 'string') {
@@ -132,41 +136,43 @@ function parsePrice(val: unknown): number {
   return 0;
 }
 
-function jsonToBoothItem(data: Record<string, unknown>): BoothItem | null {
-  const id = data.id as number | undefined;
+function jsonToBoothItem(data: unknown): BoothItem | null {
+  if (!isRecord(data)) return null;
+
+  const id = typeof data.id === 'number' ? data.id : undefined;
   if (id == null) return null;
 
   const images: string[] = [];
   if (Array.isArray(data.images)) {
     for (const img of data.images) {
-      const src =
-        (img as Record<string, unknown>).original ?? (img as Record<string, unknown>).resized;
+      if (!isRecord(img)) continue;
+      const src = img.original ?? img.resized;
       if (typeof src === 'string') images.push(src);
     }
   }
 
   const tags: string[] = [];
   if (Array.isArray(data.tags)) {
-    for (const t of data.tags) {
-      const name = (t as Record<string, unknown>).name;
-      if (typeof name === 'string') tags.push(name);
+    for (const tag of data.tags) {
+      if (!isRecord(tag)) continue;
+      if (typeof tag.name === 'string') tags.push(tag.name);
     }
   }
 
-  const category = data.category as Record<string, unknown> | undefined;
-  const shop = data.shop as Record<string, unknown> | undefined;
+  const category = isRecord(data.category) ? data.category : undefined;
+  const shop = isRecord(data.shop) ? data.shop : undefined;
 
   const wishListsCount =
     typeof data.wish_lists_count === 'number' ? data.wish_lists_count : undefined;
 
   return {
     id,
-    name: (data.name as string) || '',
-    description: (data.description as string) || null,
+    name: typeof data.name === 'string' ? data.name : '',
+    description: typeof data.description === 'string' ? data.description : null,
     price: parsePrice(data.price),
-    category_name: (category?.name as string) || null,
-    shop_name: (shop?.name as string) || null,
-    url: (data.url as string) || `https://booth.pm/ja/items/${id}`,
+    category_name: (typeof category?.name === 'string' ? category.name : null),
+    shop_name: (typeof shop?.name === 'string' ? shop.name : null),
+    url: typeof data.url === 'string' ? data.url : `https://booth.pm/ja/items/${id}`,
     images,
     tags,
     wish_lists_count: wishListsCount,
@@ -203,8 +209,8 @@ export async function enrichWithWishCount(
             const count = typeof data.wish_lists_count === 'number' ? data.wish_lists_count : 0;
             result[idx] = { ...result[idx], wish_lists_count: count };
           }
-        } catch {
-          // Skip failed items — leave wish_lists_count as undefined
+        } catch (e) {
+          console.warn(`Wish count fetch failed for item ${item.id}:`, e);
         }
       }),
     );

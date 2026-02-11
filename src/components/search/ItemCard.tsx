@@ -1,4 +1,4 @@
-import { memo } from 'react';
+import { memo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Heart, Link2, Languages, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
@@ -7,7 +7,7 @@ import { useI18n } from '../../lib/i18n';
 import { Badge } from '@/components/ui/badge';
 import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
 import FavoriteButton from '../favorites/FavoriteButton';
-import { useTranslation } from '../../hooks/useTranslation';
+import { performTranslation } from '../../hooks/useTranslation';
 
 interface Props {
   item: BoothItem;
@@ -16,12 +16,40 @@ interface Props {
   onRemoveFavorite: (itemId: number) => Promise<void>;
 }
 
+interface TranslationState {
+  text: string | null;
+  loading: boolean;
+  visible: boolean;
+  error: boolean;
+}
+
+const INITIAL_TRANSLATION: TranslationState = { text: null, loading: false, visible: false, error: false };
+
 export default memo(function ItemCard({ item, favorited, onAddFavorite, onRemoveFavorite }: Props) {
-  const { t } = useI18n();
+  const { t, language } = useI18n();
   const thumbnail = item.images[0] || '';
   const priceText = item.price === 0 ? t.item.free : `¥${item.price.toLocaleString()}`;
-  const { translatedText, isTranslating, isTranslationVisible, translationError, translate } =
-    useTranslation();
+  const [tr, setTr] = useState<TranslationState>(INITIAL_TRANSLATION);
+
+  const handleTranslate = async () => {
+    // Toggle off if already visible
+    if (tr.visible) {
+      setTr((s) => ({ ...s, visible: false }));
+      return;
+    }
+    // Show cached result if available
+    if (tr.text) {
+      setTr((s) => ({ ...s, visible: true }));
+      return;
+    }
+    setTr({ text: null, loading: true, visible: false, error: false });
+    try {
+      const translated = await performTranslation(item.name, language);
+      setTr({ text: translated, loading: false, visible: true, error: false });
+    } catch {
+      setTr({ text: null, loading: false, visible: false, error: true });
+    }
+  };
 
   const handleCopyLink = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -80,21 +108,21 @@ export default memo(function ItemCard({ item, favorited, onAddFavorite, onRemove
                 <TooltipContent>{item.name}</TooltipContent>
               </Tooltip>
               <button
-                onClick={() => translate(item.name)}
+                onClick={handleTranslate}
                 className="p-2 md:p-0.5 text-gray-400 hover:text-indigo-600 transition-colors shrink-0"
                 title={t.translation.button}
               >
-                {isTranslating ? (
+                {tr.loading ? (
                   <Loader2 className="w-3.5 h-3.5 animate-spin" />
                 ) : (
                   <Languages className="w-3.5 h-3.5" />
                 )}
               </button>
             </div>
-            {isTranslationVisible && translatedText && (
-              <p className="text-xs text-indigo-600 mt-0.5">{translatedText}</p>
+            {tr.visible && tr.text && (
+              <p className="text-xs text-indigo-600 mt-0.5">{tr.text}</p>
             )}
-            {translationError && (
+            {tr.error && (
               <p className="text-xs text-red-400 mt-0.5">{t.translation.error}</p>
             )}
           </div>
