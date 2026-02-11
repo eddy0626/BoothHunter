@@ -124,7 +124,7 @@ export default function SearchBar({ onSearch, initialKeyword = '', isLoading }: 
           <div
             ref={dropdownRef}
             role="listbox"
-            className="absolute z-50 top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden"
+            className="absolute z-50 bottom-full mb-1 lg:bottom-auto lg:top-full lg:mb-0 lg:mt-1 left-0 right-0 bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden"
           >
             {suggestions.map((s, idx) => (
               <button

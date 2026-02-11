@@ -50,10 +50,10 @@ export default function SearchPage() {
   const categoryLabel = activeCategory ? getCategoryLabel(activeCategory, t) : null;
 
   return (
-    <div className="p-3 md:p-6">
+    <div className="p-3 md:p-6 pb-20 lg:pb-6">
       <div className="max-w-7xl mx-auto">
-        {/* Sticky search bar on mobile */}
-        <div className="sticky top-0 z-30 bg-gray-50 -mx-3 px-3 pb-2 md:static md:mx-0 md:px-0 md:pb-0 md:bg-transparent">
+        {/* Mobile: fixed above bottom tab bar / Desktop: static at top */}
+        <div className="fixed bottom-[calc(3.5rem+env(safe-area-inset-bottom,0px))] inset-x-0 z-30 bg-white/95 backdrop-blur-sm border-t border-gray-200 px-3 py-2 lg:static lg:bg-transparent lg:backdrop-blur-none lg:border-t-0 lg:px-0 lg:py-0">
           <SearchBar
             onSearch={handleSearch}
             initialKeyword={currentParams?.keyword}
