@@ -20,7 +20,7 @@ import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip
 import { Skeleton } from '@/components/ui/skeleton';
 import FavoriteButton from '../components/favorites/FavoriteButton';
 import { useTranslation } from '../hooks/useTranslation';
-import { open } from '@tauri-apps/plugin-shell';
+import { openUrl } from '@tauri-apps/plugin-opener';
 
 export default function ItemDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -87,7 +87,7 @@ export default function ItemDetailPage() {
       const host = parsed.hostname;
       const validHost = host === 'booth.pm' || /^[\w-]+\.booth\.pm$/.test(host);
       if (parsed.protocol === 'https:' && validHost) {
-        await open(item.url);
+        await openUrl(item.url);
       }
     } catch {
       // URL parsing failed or open failed — no action needed

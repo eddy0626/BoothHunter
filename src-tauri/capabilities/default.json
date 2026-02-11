@@ -7,6 +7,13 @@
     "core:default",
     "shell:default",
     {
+      "identifier": "opener:allow-open-url",
+      "allow": [
+        { "url": "https://booth.pm/**" },
+        { "url": "https://*.booth.pm/**" }
+      ]
+    },
+    {
       "identifier": "http:default",
       "allow": [
         { "url": "https://booth.pm/**" },
