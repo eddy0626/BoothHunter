@@ -3,12 +3,17 @@ mod commands;
 mod database;
 mod error;
 
-use tauri::{Emitter, Manager};
+use tauri::Manager;
+#[cfg(desktop)]
+use tauri::Emitter;
+#[cfg(desktop)]
 use tauri_plugin_updater::UpdaterExt;
 
+#[cfg(desktop)]
 use commands::updater::{PendingUpdate, UpdateInfo};
 use database::AppDatabase;
 
+#[cfg(desktop)]
 async fn check_for_update(app: tauri::AppHandle) {
     let updater = match app.updater() {
         Ok(u) => u,
@@ -46,11 +51,19 @@ async fn check_for_update(app: tauri::AppHandle) {
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
-    tauri::Builder::default()
+    #[allow(unused_mut)]
+    let mut builder = tauri::Builder::default()
         .plugin(tauri_plugin_shell::init())
-        .plugin(tauri_plugin_http::init())
-        .plugin(tauri_plugin_process::init())
-        .manage(PendingUpdate::default())
+        .plugin(tauri_plugin_http::init());
+
+    #[cfg(desktop)]
+    {
+        builder = builder
+            .plugin(tauri_plugin_process::init())
+            .manage(PendingUpdate::default());
+    }
+
+    builder
         .invoke_handler(tauri::generate_handler![
             commands::db::cache_items,
             commands::db::save_search_history,
@@ -77,6 +90,7 @@ pub fn run() {
             commands::stats::get_all_statistics,
             commands::translation::get_cached_translation,
             commands::translation::save_cached_translation,
+            #[cfg(desktop)]
             commands::updater::install_update,
         ])
         .setup(|app| {
